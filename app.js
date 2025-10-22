@@ -8,10 +8,11 @@ const App = {
 
     // Missions par manche
     missions: {
-        1: "Une suite + Un brelan",
-        2: "Deux suites",
-        3: "Trois brelans",
-        4: "Deux brelans et une suite (ne pas jeter à la fin)",
+        1: "Deux brelans",
+        2: "Une suite + Un brelan",
+        3: "Deux suites",
+        4: "Trois brelans",
+        5: "Deux brelans et une suite (on jète pas à la fin)",
     },
 
     // Navigation entre les écrans
@@ -249,14 +250,14 @@ const App = {
             inputGroup.className = 'card-input-group';
 
             const label = document.createElement('label');
-            label.textContent = 'Nombre de cartes';
+            label.textContent = 'Nombre de points';
 
             const input = document.createElement('input');
             input.type = 'number';
             input.min = '1';
             input.max = '50';
             input.value = '';
-            input.placeholder = 'Entrez le nombre';
+            input.placeholder = '-';
             input.required = true;
             input.id = `cards-${player.id}`;
             input.oninput = () => this.updatePlayerTotal(player.id);
@@ -271,7 +272,7 @@ const App = {
 
             playerDiv.appendChild(playerName);
             playerDiv.appendChild(inputGroup);
-            playerDiv.appendChild(total);
+            //playerDiv.appendChild(total);
 
             container.appendChild(playerDiv);
         });
@@ -347,8 +348,8 @@ const App = {
 
         console.log('Scores mis à jour:', this.players);
 
-        // Vérifier si c'est la fin du jeu (après la manche 4)
-        if (this.currentRound > 4) {
+        // Vérifier si c'est la fin du jeu (après la manche 5)
+        if (this.currentRound > 5) {
             this.showFinalScore();
         } else {
             this.showScoreboard();
