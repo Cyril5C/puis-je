@@ -39,10 +39,6 @@
             <!-- Écran de sélection du nombre de joueurs -->
             <div id="player-count-screen" class="screen hidden">
                 <h2>Nombre de joueurs</h2>
-                <div id="replay-section" class="replay-section hidden">
-                    <button id="replay-with-same-btn" class="btn btn-primary btn-replay">Rejouer avec les mêmes joueurs</button>
-                    <div class="separator">ou</div>
-                </div>
                 <div class="player-count-buttons">
                     <button class="btn btn-secondary player-count-btn" data-count="3">3 joueurs</button>
                     <button class="btn btn-secondary player-count-btn" data-count="4">4 joueurs</button>
@@ -56,6 +52,7 @@
                 <form id="player-names-form">
                     <div id="player-inputs"></div>
                     <button type="submit" class="btn btn-primary">Suivant</button>
+                    <button type="button" id="back-to-count-btn" class="btn btn-secondary btn-small">Précédent</button>
                 </form>
             </div>
 

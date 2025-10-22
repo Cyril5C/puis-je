@@ -29,6 +29,9 @@ const App = {
         const container = document.getElementById('player-inputs');
         container.innerHTML = '';
 
+        // Récupérer les derniers joueurs pour pré-remplir
+        const lastPlayers = Storage.getLastPlayers();
+
         for (let i = 1; i <= count; i++) {
             const inputGroup = document.createElement('div');
             inputGroup.className = 'player-input-group';
@@ -44,6 +47,11 @@ const App = {
             input.placeholder = `Pseudo du joueur ${i}`;
             input.required = true;
             input.maxLength = 20;
+
+            // Pré-remplir avec les derniers joueurs si disponibles
+            if (lastPlayers && lastPlayers[i - 1]) {
+                input.value = lastPlayers[i - 1];
+            }
 
             inputGroup.appendChild(label);
             inputGroup.appendChild(input);
@@ -179,20 +187,6 @@ const App = {
         this.showScreen('game-area');
     },
 
-    // Afficher ou masquer le bouton rejouer
-    updateReplayButton() {
-        const lastPlayers = Storage.getLastPlayers();
-        const replaySection = document.getElementById('replay-section');
-        const replayBtn = document.getElementById('replay-with-same-btn');
-
-        if (lastPlayers && lastPlayers.length >= 3) {
-            replaySection.classList.remove('hidden');
-            replayBtn.textContent = `Rejouer avec ${lastPlayers.join(', ')}`;
-        } else {
-            replaySection.classList.add('hidden');
-        }
-    },
-
     // Lancer la manche
     startRound() {
         const mission = this.missions[this.currentRound] || "Mission à définir";
@@ -254,6 +248,7 @@ const App = {
 
             const input = document.createElement('input');
             input.type = 'number';
+            input.inputMode = 'numeric';
             input.min = '1';
             input.max = '50';
             input.value = '';
@@ -532,7 +527,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Bouton "Lancer une partie"
     document.getElementById('start-game-btn').addEventListener('click', () => {
-        App.updateReplayButton();
         App.showScreen('player-count-screen');
     });
 
@@ -629,21 +623,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('clear-storage-btn').addEventListener('click', () => {
         if (confirm('Êtes-vous sûr de vouloir effacer toutes les données sauvegardées ? Cette action est irréversible.')) {
             Storage.clearAll();
-            App.players = [];
-            App.currentRound = 1;
             alert('Le stockage local a été effacé avec succès.');
-            App.showScreen('home-screen');
+            // Recharger la page pour une mise à jour complète
+            window.location.reload();
         }
     });
 
-    // Bouton "Rejouer avec les mêmes joueurs"
-    const replayBtn = document.getElementById('replay-with-same-btn');
-    if (replayBtn) {
-        replayBtn.addEventListener('click', () => {
-            const lastPlayers = Storage.getLastPlayers();
-            if (lastPlayers && lastPlayers.length >= 3) {
-                App.startGame(lastPlayers);
-            }
-        });
-    }
+    // Bouton "Précédent" de la page pseudos
+    document.getElementById('back-to-count-btn').addEventListener('click', () => {
+        App.showScreen('player-count-screen');
+    });
 });

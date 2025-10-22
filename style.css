@@ -64,6 +64,8 @@ h2 {
     transition: all 0.3s ease;
     width: 100%;
     max-width: 300px;
+    margin: 0 auto;
+    display: block;
 }
 
 .btn-primary {
@@ -105,43 +107,6 @@ h2 {
 }
 
 /* Écran de sélection du nombre de joueurs */
-.replay-section {
-    width: 100%;
-    max-width: 400px;
-    margin-bottom: 1.5rem;
-}
-
-.btn-replay {
-    max-width: 400px;
-    margin-bottom: 0.5rem;
-}
-
-.separator {
-    text-align: center;
-    color: #999;
-    font-size: 0.9rem;
-    margin: 1rem 0;
-    position: relative;
-}
-
-.separator::before,
-.separator::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    width: 40%;
-    height: 1px;
-    background: #ddd;
-}
-
-.separator::before {
-    left: 0;
-}
-
-.separator::after {
-    right: 0;
-}
-
 .player-count-buttons {
     display: flex;
     flex-direction: column;
@@ -316,6 +281,7 @@ h2 {
     font-size: 1.3rem;
     padding: 1.5rem 3rem;
     max-width: 400px;
+    margin: 0 auto;
 }
 
 /* Écran de sélection du gagnant */
