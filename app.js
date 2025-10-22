@@ -492,11 +492,23 @@ const App = {
     // Arrêter la partie
     endGame() {
         if (confirm('Êtes-vous sûr de vouloir arrêter la partie ? Les scores seront perdus.')) {
+            // Sauvegarder les noms des joueurs avant de tout effacer
+            const lastPlayers = Storage.getLastPlayers();
+
             // Réinitialiser l'état
             this.players = [];
             this.currentRound = 1;
-            Storage.clearAll();
-            console.log('Partie arrêtée');
+
+            // Effacer les scores et l'état du jeu, mais pas les derniers joueurs
+            Storage.clearGameState();
+            Storage.saveScores({});
+
+            // Restaurer les derniers joueurs
+            if (lastPlayers) {
+                Storage.saveLastPlayers(lastPlayers);
+            }
+
+            console.log('Partie arrêtée - Joueurs conservés en mémoire');
 
             // Retour à l'écran d'accueil
             this.showScreen('home-screen');
@@ -624,10 +636,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Bouton "Rejouer avec les mêmes joueurs"
-    document.getElementById('replay-with-same-btn').addEventListener('click', () => {
-        const lastPlayers = Storage.getLastPlayers();
-        if (lastPlayers && lastPlayers.length >= 3) {
-            App.startGame(lastPlayers);
-        }
-    });
+    const replayBtn = document.getElementById('replay-with-same-btn');
+    if (replayBtn) {
+        replayBtn.addEventListener('click', () => {
+            const lastPlayers = Storage.getLastPlayers();
+            if (lastPlayers && lastPlayers.length >= 3) {
+                App.startGame(lastPlayers);
+            }
+        });
+    }
 });
