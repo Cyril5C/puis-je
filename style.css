@@ -1,0 +1,487 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    width: 100%;
+    background: white;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+header {
+    text-align: center;
+    padding: 1rem 0;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+h1 {
+    font-size: 2rem;
+    color: #667eea;
+    font-weight: 700;
+}
+
+main {
+    padding: 1.5rem 0;
+}
+
+.screen {
+    min-height: calc(100vh - 150px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.screen.hidden {
+    display: none;
+}
+
+h2 {
+    font-size: 1.5rem;
+    color: #667eea;
+    margin-bottom: 1rem;
+}
+
+/* Boutons */
+.btn {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 300px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.btn-secondary:hover {
+    background: #667eea;
+    color: white;
+}
+
+/* Écran de sélection du nombre de joueurs */
+.player-count-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 300px;
+}
+
+/* Formulaire des pseudos */
+#player-names-form {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+#player-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.player-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.player-input-group label {
+    font-weight: 600;
+    color: #667eea;
+}
+
+.player-input-group input {
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+}
+
+.player-input-group input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* Liste des joueurs */
+#players-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.player-card {
+    padding: 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.player-card span {
+    flex: 1;
+}
+
+.delete-player-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid white;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.delete-player-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Actions de jeu */
+.game-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 1rem;
+}
+
+/* Écran de manche */
+#round-screen {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    z-index: 1000;
+}
+
+#round-screen.hidden {
+    display: none;
+}
+
+.round-header {
+    text-align: center;
+    width: 100%;
+}
+
+#round-title {
+    color: white;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.mission-card {
+    background: rgba(255, 255, 255, 0.95);
+    color: #667eea;
+    padding: 3rem 2rem;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.mission-card h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #764ba2;
+}
+
+.mission-card p {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.4;
+}
+
+#round-content {
+    width: 100%;
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-large {
+    font-size: 1.3rem;
+    padding: 1.5rem 3rem;
+    max-width: 400px;
+}
+
+/* Écran de sélection du gagnant */
+#winner-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.winner-btn {
+    padding: 1.5rem;
+    font-size: 1.3rem;
+    background: white;
+    color: #667eea;
+    border: 3px solid #667eea;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.winner-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Écran de comptage des cartes */
+.subtitle {
+    font-size: 1.1rem;
+    color: #667eea;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+#card-counting {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 2rem;
+}
+
+.player-card-count {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.player-card-count h3 {
+    font-size: 1.2rem;
+    color: #667eea;
+    margin: 0;
+}
+
+.card-input-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.card-input-group label {
+    flex: 1;
+    font-weight: 600;
+    color: #333;
+}
+
+.card-input-group input {
+    width: 80px;
+    padding: 0.75rem;
+    font-size: 1.2rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.card-input-group input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.player-total {
+    font-weight: 700;
+    color: #764ba2;
+    font-size: 1.1rem;
+    text-align: right;
+}
+
+/* Tableau des scores */
+#scoreboard-table {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 2rem;
+}
+
+.scoreboard-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem;
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.scoreboard-row:hover {
+    transform: translateX(5px);
+}
+
+.scoreboard-row.first-place {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    border: 3px solid #ffa500;
+}
+
+.scoreboard-row.first-place .player-name {
+    font-weight: 700;
+}
+
+.player-rank {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #667eea;
+    min-width: 40px;
+}
+
+.scoreboard-row.first-place .player-rank {
+    color: #ff8c00;
+}
+
+.player-name {
+    flex: 1;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.player-score {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #764ba2;
+    min-width: 80px;
+    text-align: right;
+}
+
+.scoreboard-row.first-place .player-score {
+    color: #ff6b00;
+}
+
+.scoreboard-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Mode paysage */
+@media (orientation: landscape) {
+    #round-title {
+        font-size: 3rem;
+        margin-bottom: 3rem;
+    }
+
+    .mission-card {
+        padding: 4rem 3rem;
+    }
+
+    .mission-card h3 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .mission-card p {
+        font-size: 4rem;
+    }
+}
+
+/* Tablet et desktop */
+@media (min-width: 768px) {
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1200px;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 2rem;
+        min-height: 600px;
+    }
+
+    header {
+        padding: 1rem 0 2rem 0;
+    }
+
+    h1 {
+        font-size: 3rem;
+    }
+
+    main {
+        padding: 2rem 0;
+    }
+
+    .screen {
+        min-height: 400px;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+}

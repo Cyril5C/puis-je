@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puis-je - Jeu de cartes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Puis-je</h1>
+        </header>
+        <main>
+            <!-- Écran d'accueil -->
+            <div id="home-screen" class="screen">
+                <button id="start-game-btn" class="btn btn-primary">Lancer une partie</button>
+            </div>
+
+            <!-- Écran de sélection du nombre de joueurs -->
+            <div id="player-count-screen" class="screen hidden">
+                <h2>Nombre de joueurs</h2>
+                <div class="player-count-buttons">
+                    <button class="btn btn-secondary player-count-btn" data-count="3">3 joueurs</button>
+                    <button class="btn btn-secondary player-count-btn" data-count="4">4 joueurs</button>
+                    <button class="btn btn-secondary player-count-btn" data-count="5">5 joueurs</button>
+                </div>
+            </div>
+
+            <!-- Écran de saisie des pseudos -->
+            <div id="player-names-screen" class="screen hidden">
+                <h2>Pseudos des joueurs</h2>
+                <form id="player-names-form">
+                    <div id="player-inputs"></div>
+                    <button type="submit" class="btn btn-primary">Suivant</button>
+                </form>
+            </div>
+
+            <!-- Zone de jeu -->
+            <div id="game-area" class="screen hidden">
+                <h2>Participants</h2>
+                <div id="players-list"></div>
+                <div class="game-actions">
+                    <button id="modify-players-btn" class="btn btn-secondary">Modifier les joueurs</button>
+                    <button id="add-player-btn" class="btn btn-secondary">Ajouter un joueur</button>
+                    <button id="start-round-btn" class="btn btn-primary">Lancer la partie</button>
+                </div>
+            </div>
+
+            <!-- Écran de manche -->
+            <div id="round-screen" class="screen hidden">
+                <div class="round-header">
+                    <h2 id="round-title">Manche 1</h2>
+                    <div class="mission-card">
+                        <h3>Mission</h3>
+                        <p id="mission-text">Une suite + Un brelan</p>
+                    </div>
+                </div>
+                <div id="round-content">
+                    <button id="round-score-btn" class="btn btn-primary btn-large">Score de la manche</button>
+                </div>
+            </div>
+
+            <!-- Écran de sélection du gagnant -->
+            <div id="winner-screen" class="screen hidden">
+                <h2>Qui a gagné la manche ?</h2>
+                <div id="winner-selection"></div>
+            </div>
+
+            <!-- Écran de comptage des cartes -->
+            <div id="card-count-screen" class="screen hidden">
+                <h2>Comptage des cartes</h2>
+                <p class="subtitle">Gagnant : <span id="winner-name"></span> (-20 points)</p>
+                <div id="card-counting"></div>
+                <button id="validate-scores-btn" class="btn btn-primary">Valider les scores</button>
+            </div>
+
+            <!-- Écran du tableau des scores -->
+            <div id="scoreboard-screen" class="screen hidden">
+                <h2>Tableau des scores</h2>
+                <div id="scoreboard-table"></div>
+                <div class="scoreboard-actions">
+                    <button id="next-round-btn" class="btn btn-primary">Manche suivante</button>
+                    <button id="end-game-btn" class="btn btn-secondary">Arrêter la partie</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="storage.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
