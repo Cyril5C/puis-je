@@ -87,7 +87,61 @@ h2 {
     color: white;
 }
 
+.btn-small {
+    font-size: 0.9rem;
+    padding: 0.75rem 1.5rem;
+    margin-top: 1rem;
+}
+
+.btn-danger {
+    background: #e53e3e;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c53030;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(229, 62, 62, 0.4);
+}
+
 /* Écran de sélection du nombre de joueurs */
+.replay-section {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 1.5rem;
+}
+
+.btn-replay {
+    max-width: 400px;
+    margin-bottom: 0.5rem;
+}
+
+.separator {
+    text-align: center;
+    color: #999;
+    font-size: 0.9rem;
+    margin: 1rem 0;
+    position: relative;
+}
+
+.separator::before,
+.separator::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: #ddd;
+}
+
+.separator::before {
+    left: 0;
+}
+
+.separator::after {
+    right: 0;
+}
+
 .player-count-buttons {
     display: flex;
     flex-direction: column;
@@ -425,6 +479,177 @@ h2 {
     gap: 1rem;
     width: 100%;
     max-width: 400px;
+}
+
+/* Écran des scores finaux */
+#final-scoreboard {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 2rem;
+}
+
+#final-score-screen h2 {
+    color: #667eea;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+#final-score-screen .scoreboard-row.first-place {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    border: 3px solid #ffa500;
+    transform: scale(1.05);
+    box-shadow: 0 8px 24px rgba(255, 215, 0, 0.4);
+}
+
+#final-score-screen .player-name {
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 3px;
+}
+
+#final-score-screen .player-name:hover {
+    color: #667eea;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 90%;
+    width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+#modal-player-name {
+    color: #667eea;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+#modal-round-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.round-detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    background: #f5f5f5;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.round-detail-row.winner {
+    background: #e8f5e9;
+    border-left-color: #4caf50;
+}
+
+.round-info {
+    flex: 1;
+}
+
+.round-number {
+    font-weight: 700;
+    color: #667eea;
+    font-size: 1.1rem;
+}
+
+.round-mission {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+.round-score {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #764ba2;
+}
+
+.round-detail-row.winner .round-score {
+    color: #4caf50;
+}
+
+.modal-total {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+/* Écran des paramètres */
+.settings-content {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.settings-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 2px solid #e0e0e0;
+}
+
+.settings-section h3 {
+    color: #667eea;
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+}
+
+.settings-description {
+    color: #666;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
 }
 
 /* Mode paysage */

@@ -10,8 +10,8 @@ const App = {
     missions: {
         1: "Une suite + Un brelan",
         2: "Deux suites",
-        3: "Mission 3", // À définir
-        4: "Mission 4", // À définir
+        3: "Trois brelans",
+        4: "Deux brelans et une suite (ne pas jeter à la fin)",
     },
 
     // Navigation entre les écrans
@@ -159,8 +159,12 @@ const App = {
         this.players = playerNames.map((name, index) => ({
             id: index + 1,
             name: name,
-            score: 0
+            score: 0,
+            roundScores: [] // Historique des scores par manche
         }));
+
+        // Sauvegarder les noms des joueurs pour rejouer plus tard
+        Storage.saveLastPlayers(playerNames);
 
         // Sauvegarder l'état initial
         Storage.saveGameState({
@@ -172,6 +176,20 @@ const App = {
         console.log('Partie commencée avec les joueurs:', this.players);
         this.displayPlayers();
         this.showScreen('game-area');
+    },
+
+    // Afficher ou masquer le bouton rejouer
+    updateReplayButton() {
+        const lastPlayers = Storage.getLastPlayers();
+        const replaySection = document.getElementById('replay-section');
+        const replayBtn = document.getElementById('replay-with-same-btn');
+
+        if (lastPlayers && lastPlayers.length >= 3) {
+            replaySection.classList.remove('hidden');
+            replayBtn.textContent = `Rejouer avec ${lastPlayers.join(', ')}`;
+        } else {
+            replaySection.classList.add('hidden');
+        }
     },
 
     // Lancer la manche
@@ -291,15 +309,29 @@ const App = {
             }
         }
 
-        // Mettre à jour les scores
+        // Calculer et enregistrer les scores de cette manche
+        const currentRoundNumber = this.currentRound;
         this.players = this.players.map(player => {
+            let roundScore;
             if (player.id === this.currentWinner.id) {
-                return { ...player, score: player.score - 20 };
+                roundScore = -20;
             } else {
                 const input = document.getElementById(`cards-${player.id}`);
-                const cardCount = parseInt(input.value);
-                return { ...player, score: player.score + cardCount };
+                roundScore = parseInt(input.value);
             }
+
+            // Ajouter le score de la manche à l'historique
+            const updatedRoundScores = [...(player.roundScores || []), {
+                round: currentRoundNumber,
+                score: roundScore,
+                mission: this.missions[currentRoundNumber]
+            }];
+
+            return {
+                ...player,
+                score: player.score + roundScore,
+                roundScores: updatedRoundScores
+            };
         });
 
         // Incrémenter la manche pour la prochaine fois
@@ -315,8 +347,12 @@ const App = {
 
         console.log('Scores mis à jour:', this.players);
 
-        // Afficher le tableau des scores
-        this.showScoreboard();
+        // Vérifier si c'est la fin du jeu (après la manche 4)
+        if (this.currentRound > 4) {
+            this.showFinalScore();
+        } else {
+            this.showScoreboard();
+        }
     },
 
     // Afficher le tableau des scores
@@ -358,6 +394,101 @@ const App = {
         this.showScreen('scoreboard-screen');
     },
 
+    // Afficher les scores finaux
+    showFinalScore() {
+        const container = document.getElementById('final-scoreboard');
+        container.innerHTML = '';
+
+        // Trier les joueurs par score (ordre croissant, le plus petit score gagne)
+        const sortedPlayers = [...this.players].sort((a, b) => a.score - b.score);
+
+        sortedPlayers.forEach((player, index) => {
+            const row = document.createElement('div');
+            row.className = 'scoreboard-row';
+
+            // Mettre en évidence le gagnant
+            if (index === 0) {
+                row.classList.add('first-place');
+            }
+
+            const rank = document.createElement('div');
+            rank.className = 'player-rank';
+            rank.textContent = `${index + 1}.`;
+
+            const name = document.createElement('div');
+            name.className = 'player-name';
+            name.textContent = player.name;
+            name.onclick = () => this.showPlayerDetails(player);
+
+            const score = document.createElement('div');
+            score.className = 'player-score';
+            score.textContent = `${player.score} pts`;
+
+            row.appendChild(rank);
+            row.appendChild(name);
+            row.appendChild(score);
+
+            container.appendChild(row);
+        });
+
+        this.showScreen('final-score-screen');
+    },
+
+    // Afficher les détails des manches d'un joueur
+    showPlayerDetails(player) {
+        const modal = document.getElementById('round-details-modal');
+        const playerName = document.getElementById('modal-player-name');
+        const detailsContainer = document.getElementById('modal-round-details');
+        const totalScore = document.getElementById('modal-total-score');
+
+        playerName.textContent = player.name;
+        totalScore.textContent = `${player.score} pts`;
+
+        detailsContainer.innerHTML = '';
+
+        if (player.roundScores && player.roundScores.length > 0) {
+            player.roundScores.forEach(roundData => {
+                const row = document.createElement('div');
+                row.className = 'round-detail-row';
+
+                // Marquer les manches gagnées
+                if (roundData.score === -20) {
+                    row.classList.add('winner');
+                }
+
+                const info = document.createElement('div');
+                info.className = 'round-info';
+
+                const roundNumber = document.createElement('div');
+                roundNumber.className = 'round-number';
+                roundNumber.textContent = `Manche ${roundData.round}`;
+
+                const mission = document.createElement('div');
+                mission.className = 'round-mission';
+                mission.textContent = roundData.mission;
+
+                info.appendChild(roundNumber);
+                info.appendChild(mission);
+
+                const scoreDiv = document.createElement('div');
+                scoreDiv.className = 'round-score';
+                scoreDiv.textContent = roundData.score > 0 ? `+${roundData.score}` : `${roundData.score}`;
+
+                row.appendChild(info);
+                row.appendChild(scoreDiv);
+
+                detailsContainer.appendChild(row);
+            });
+        }
+
+        modal.classList.remove('hidden');
+    },
+
+    // Fermer la modal
+    closeModal() {
+        document.getElementById('round-details-modal').classList.add('hidden');
+    },
+
     // Arrêter la partie
     endGame() {
         if (confirm('Êtes-vous sûr de vouloir arrêter la partie ? Les scores seront perdus.')) {
@@ -388,6 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Bouton "Lancer une partie"
     document.getElementById('start-game-btn').addEventListener('click', () => {
+        App.updateReplayButton();
         App.showScreen('player-count-screen');
     });
 
@@ -451,5 +583,51 @@ document.addEventListener('DOMContentLoaded', () => {
     // Bouton "Arrêter la partie"
     document.getElementById('end-game-btn').addEventListener('click', () => {
         App.endGame();
+    });
+
+    // Bouton "Nouvelle partie"
+    document.getElementById('new-game-btn').addEventListener('click', () => {
+        App.endGame();
+    });
+
+    // Fermer la modal
+    document.querySelector('.modal-close').addEventListener('click', () => {
+        App.closeModal();
+    });
+
+    // Fermer la modal en cliquant sur le fond
+    document.getElementById('round-details-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'round-details-modal') {
+            App.closeModal();
+        }
+    });
+
+    // Bouton "Paramètres"
+    document.getElementById('settings-btn').addEventListener('click', () => {
+        App.showScreen('settings-screen');
+    });
+
+    // Bouton "Retour" des paramètres
+    document.getElementById('back-to-home-btn').addEventListener('click', () => {
+        App.showScreen('home-screen');
+    });
+
+    // Bouton "Effacer le stockage"
+    document.getElementById('clear-storage-btn').addEventListener('click', () => {
+        if (confirm('Êtes-vous sûr de vouloir effacer toutes les données sauvegardées ? Cette action est irréversible.')) {
+            Storage.clearAll();
+            App.players = [];
+            App.currentRound = 1;
+            alert('Le stockage local a été effacé avec succès.');
+            App.showScreen('home-screen');
+        }
+    });
+
+    // Bouton "Rejouer avec les mêmes joueurs"
+    document.getElementById('replay-with-same-btn').addEventListener('click', () => {
+        const lastPlayers = Storage.getLastPlayers();
+        if (lastPlayers && lastPlayers.length >= 3) {
+            App.startGame(lastPlayers);
+        }
     });
 });
