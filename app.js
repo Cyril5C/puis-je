@@ -284,6 +284,14 @@ const App = {
         this.currentWinner = winner;
 
         this.showScreen('card-count-screen');
+
+        // Mettre le focus sur le premier champ de saisie
+        setTimeout(() => {
+            const firstInput = container.querySelector('input');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        }, 100);
     },
 
     // Mettre à jour le total d'un joueur
