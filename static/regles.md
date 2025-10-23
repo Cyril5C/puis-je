@@ -25,6 +25,7 @@
 ### Demander "Puis-je ?"
 - Lorsqu'un joueur défausse une carte, **les autres joueurs** (sauf celui qui vient de jouer) peuvent demander "Puis-je ?"
 - Si plusieurs joueurs demandent, c'est le joueur le plus proche **dans le sens du jeu** qui a la priorité
+- Le joueur pour qui c'est le tour de jouer peut dire "non" au joueur qui dis "puis-je". Dans ce cas le joueur pour qui c'est le tour prend la carte sur le talon et ne peut pas défausser.
 - Le joueur qui dit "Puis-je" :
   - Prend la carte défaussée
   - Doit piocher une **carte supplémentaire** (de la pioche cachée)
@@ -32,7 +33,7 @@
 
 ### Terminer la manche
 
-Pour terminer, un joueur doit réaliser la **mission de la manche** :
+Pour terminer, un joueur doit réaliser la **mission de la manche** et ne plus avoir de carte :
 
 #### Manche 1 : Deux brelans
 - Exemple : 3♥ 3♠ 3♦ et 7♣ 7♥ 7♦
@@ -54,23 +55,24 @@ Pour terminer, un joueur doit réaliser la **mission de la manche** :
 ### Compositions valides
 
 **Brelan** : 3 cartes ou plus de même valeur
-- Les Jokers sont des cartes "joker" qui remplacent n'importe quelle carte
 
 **Suite** : 4 cartes ou plus qui se suivent
-- Peut être de couleurs différentes
+- De la même de couleur
 - L'As peut être bas (A-2-3-4) ou haut (J-Q-K-A)
-- Les Jokers remplacent n'importe quelle carte
 
 ### Fin de manche
 
 Lorsqu'un joueur a réalisé sa mission :
-- Il étale son jeu et annonce qu'il a terminé
+- Lorsque son tour arrive il étale devant lui les cartes de sa mission.
+- Il peut poser des cartes sur les autres cartes des joueurs qui ont étalé
+
+La manche se termine dès qu'un joueur n'a plus de carte en main.
+
 - **Le gagnant marque -20 points**
 - Les autres joueurs comptent leurs cartes restantes :
   - Cartes 2-10 : valeur nominale
   - Figures (J, Q, K) : 10 points
-  - As : 11 points
-  - Joker : 20 points
+  - As : 15 points
 
 ## Fin de partie
 
