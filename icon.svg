@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Fond gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Fond arrondi -->
+  <rect width="512" height="512" rx="110" fill="url(#bgGradient)"/>
+
+  <!-- Cartes en éventail -->
+  <g filter="url(#shadow)">
+    <!-- Carte arrière gauche -->
+    <rect x="100" y="180" width="120" height="180" rx="12" fill="#fff" transform="rotate(-15 160 270)"/>
+    <rect x="110" y="190" width="100" height="160" rx="8" fill="#f0f0f0" transform="rotate(-15 160 270)"/>
+
+    <!-- Carte centrale -->
+    <rect x="196" y="150" width="120" height="180" rx="12" fill="#fff"/>
+    <text x="256" y="230" font-family="Arial, sans-serif" font-size="80" font-weight="bold" fill="#667eea" text-anchor="middle">?</text>
+    <text x="220" y="185" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#e74c3c" text-anchor="middle">A</text>
+    <text x="292" y="315" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#e74c3c" text-anchor="middle">A</text>
+
+    <!-- Carte arrière droite -->
+    <rect x="292" y="180" width="120" height="180" rx="12" fill="#fff" transform="rotate(15 352 270)"/>
+    <rect x="302" y="190" width="100" height="160" rx="8" fill="#f0f0f0" transform="rotate(15 352 270)"/>
+  </g>
+
+  <!-- Texte "Puis-je" en bas -->
+  <text x="256" y="420" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#fff" text-anchor="middle">Puis-je</text>
+</svg>
