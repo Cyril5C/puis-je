@@ -25,9 +25,21 @@
                     <div class="form-actions">
                         <button type="button" id="add-player-btn" class="btn btn-secondary btn-small">Ajouter un joueur</button>
                         <button type="submit" class="btn btn-primary">Lancer la partie</button>
-                        <button type="button" id="settings-btn" class="btn btn-secondary btn-small">Paramètres</button>
+                        <div class="bottom-links">
+                            <button type="button" id="rules-btn" class="btn btn-secondary btn-small">Règles du jeu</button>
+                            <button type="button" id="settings-btn" class="btn btn-secondary btn-small">Paramètres</button>
+                        </div>
                     </div>
                 </form>
+            </div>
+
+            <!-- Écran des règles -->
+            <div id="rules-screen" class="screen hidden">
+                <h2>Règles du jeu</h2>
+                <div class="rules-content">
+                    <div id="rules-text"></div>
+                    <button id="back-from-rules-btn" class="btn btn-secondary">Retour</button>
+                </div>
             </div>
 
             <!-- Écran des paramètres -->
@@ -101,6 +113,7 @@
             </div>
         </main>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="storage.js"></script>
     <script src="app.js"></script>
 </body>

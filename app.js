@@ -525,6 +525,20 @@ const App = {
             // Retour à l'écran d'accueil
             this.showScreen('home-screen');
         }
+    },
+
+    // Charger et afficher les règles
+    async loadRules() {
+        try {
+            const response = await fetch('static/regles.md');
+            const markdown = await response.text();
+            const rulesContainer = document.getElementById('rules-text');
+            rulesContainer.innerHTML = marked.parse(markdown);
+            this.showScreen('rules-screen');
+        } catch (error) {
+            console.error('Erreur lors du chargement des règles:', error);
+            alert('Impossible de charger les règles du jeu.');
+        }
     }
 };
 
@@ -600,6 +614,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.id === 'round-details-modal') {
             App.closeModal();
         }
+    });
+
+    // Bouton "Règles du jeu"
+    document.getElementById('rules-btn').addEventListener('click', () => {
+        App.loadRules();
+    });
+
+    // Bouton "Retour" des règles
+    document.getElementById('back-from-rules-btn').addEventListener('click', () => {
+        App.showScreen('home-screen');
     });
 
     // Bouton "Paramètres"
