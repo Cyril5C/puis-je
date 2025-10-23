@@ -522,8 +522,9 @@ const App = {
 
             console.log('Partie arrêtée - Joueurs conservés en mémoire');
 
-            // Retour à l'écran d'accueil
+            // Retour à l'écran d'accueil avec les champs de pseudos
             this.showScreen('home-screen');
+            this.createPlayerInputs();
         }
     },
 
