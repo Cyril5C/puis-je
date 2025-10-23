@@ -548,7 +548,7 @@ const App = {
         const sortedPlayers = [...this.players].sort((a, b) => a.score - b.score);
 
         // Créer le message avec emojis
-        let message = '🎮 Puis-je - Résultats de la partie 🎮\n\n';
+        let message = '♠️ Puis-je - Résultats de la partie ♠️\n\n';
 
         sortedPlayers.forEach((player, index) => {
             let emoji = '';
