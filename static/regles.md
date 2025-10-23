@@ -4,13 +4,13 @@
 Être le joueur avec le **plus petit score** à la fin des 5 manches.
 
 ## Matériel
-- 2 jeux de 54 cartes (incluant les jokers)
+- 2 jeux de 52 cartes (sans les jokers)
 - 3 à 5 joueurs
 
 ## Déroulement du jeu
 
 ### Distribution
-- Le donneur distribue **11 cartes** à chaque joueur
+- Le donneur distribue **10 cartes** à chaque joueur
 - Le reste forme la pioche
 - On retourne la première carte de la pioche qui devient le talon
 
