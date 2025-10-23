@@ -69,13 +69,13 @@ h2 {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
     color: white;
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 10px 20px rgba(76, 175, 80, 0.4);
 }
 
 .btn-secondary {
@@ -159,6 +159,57 @@ h2 {
 .player-input-group input:focus {
     outline: none;
     border-color: #667eea;
+}
+
+/* Wrapper pour input avec boutons */
+.input-with-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.input-with-buttons input {
+    flex: 1;
+}
+
+/* Boutons d'action sur les inputs */
+.input-action-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.validate-btn {
+    background: #4caf50;
+    color: white;
+}
+
+.validate-btn:hover {
+    background: #45a049;
+    transform: scale(1.1);
+}
+
+.delete-btn {
+    background: #f44336;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #da190b;
+    transform: scale(1.1);
+}
+
+.input-with-buttons.validated .validate-btn {
+    display: none;
 }
 
 /* Écran de manche */

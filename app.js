@@ -24,15 +24,16 @@ const App = {
         this.currentScreen = screenId;
     },
 
-    // Créer les champs de saisie pour les pseudos
-    createPlayerInputs(count) {
+    // Créer les champs de saisie pour les pseudos (toujours 3 par défaut)
+    createPlayerInputs() {
         const container = document.getElementById('player-inputs');
         container.innerHTML = '';
 
-        // Récupérer les derniers joueurs pour pré-remplir
+        // Récupérer les derniers joueurs pour pré-remplir (max 3)
         const lastPlayers = Storage.getLastPlayers();
 
-        for (let i = 1; i <= count; i++) {
+        // Toujours afficher 3 champs, même si plus de joueurs étaient sauvegardés
+        for (let i = 1; i <= 3; i++) {
             const inputGroup = document.createElement('div');
             inputGroup.className = 'player-input-group';
 
@@ -48,7 +49,7 @@ const App = {
             input.required = true;
             input.maxLength = 20;
 
-            // Pré-remplir avec les derniers joueurs si disponibles
+            // Pré-remplir avec les derniers joueurs si disponibles (max 3)
             if (lastPlayers && lastPlayers[i - 1]) {
                 input.value = lastPlayers[i - 1];
             }
@@ -71,26 +72,84 @@ const App = {
 
         const newCount = currentCount + 1;
         const inputGroup = document.createElement('div');
-        inputGroup.className = 'player-input-group';
+        inputGroup.className = 'player-input-group player-input-added';
 
         const label = document.createElement('label');
         label.textContent = `Joueur ${newCount}`;
         label.setAttribute('for', `player-${newCount}`);
+
+        const inputWrapper = document.createElement('div');
+        inputWrapper.className = 'input-with-buttons';
 
         const input = document.createElement('input');
         input.type = 'text';
         input.id = `player-${newCount}`;
         input.name = `player-${newCount}`;
         input.placeholder = `Pseudo du joueur ${newCount}`;
-        input.required = true;
+        input.required = false; // Pas obligatoire pour les joueurs ajoutés
         input.maxLength = 20;
 
+        // Bouton valider
+        const validateBtn = document.createElement('button');
+        validateBtn.type = 'button';
+        validateBtn.className = 'input-action-btn validate-btn';
+        validateBtn.innerHTML = '✓';
+        validateBtn.title = 'Valider';
+        validateBtn.onclick = () => {
+            if (input.value.trim()) {
+                input.required = true;
+                inputGroup.classList.remove('player-input-added');
+                inputWrapper.classList.add('validated');
+                validateBtn.style.display = 'none';
+                deleteBtn.innerHTML = '×';
+                deleteBtn.className = 'input-action-btn delete-btn';
+            } else {
+                alert('Veuillez entrer un pseudo');
+                input.focus();
+            }
+        };
+
+        // Bouton supprimer
+        const deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'input-action-btn delete-btn';
+        deleteBtn.innerHTML = '×';
+        deleteBtn.title = 'Supprimer';
+        deleteBtn.onclick = () => {
+            inputGroup.remove();
+            // Réorganiser les numéros des joueurs
+            this.renumberPlayers();
+        };
+
+        inputWrapper.appendChild(input);
+        inputWrapper.appendChild(validateBtn);
+        inputWrapper.appendChild(deleteBtn);
+
         inputGroup.appendChild(label);
-        inputGroup.appendChild(input);
+        inputGroup.appendChild(inputWrapper);
         container.appendChild(inputGroup);
 
         // Focus sur le nouveau champ
         input.focus();
+    },
+
+    // Renuméroter les joueurs après suppression
+    renumberPlayers() {
+        const container = document.getElementById('player-inputs');
+        const inputGroups = container.children;
+
+        Array.from(inputGroups).forEach((group, index) => {
+            const newNumber = index + 1;
+            const label = group.querySelector('label');
+            const input = group.querySelector('input');
+
+            if (label) label.textContent = `Joueur ${newNumber}`;
+            if (input) {
+                input.id = `player-${newNumber}`;
+                input.name = `player-${newNumber}`;
+                input.placeholder = `Pseudo du joueur ${newNumber}`;
+            }
+        });
     },
 
     // Restaurer une partie en cours
