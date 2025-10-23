@@ -59,56 +59,38 @@ const App = {
         }
     },
 
-    // Afficher la liste des joueurs
-    displayPlayers() {
-        const container = document.getElementById('players-list');
-        container.innerHTML = '';
+    // Ajouter un champ de joueur sur la page d'accueil
+    addPlayerInput() {
+        const container = document.getElementById('player-inputs');
+        const currentCount = container.children.length;
 
-        this.players.forEach((player, index) => {
-            const playerCard = document.createElement('div');
-            playerCard.className = 'player-card';
-
-            const playerName = document.createElement('span');
-            playerName.textContent = player.name;
-
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'delete-player-btn';
-            deleteBtn.innerHTML = '&times;';
-            deleteBtn.onclick = () => this.deletePlayer(index);
-
-            playerCard.appendChild(playerName);
-            playerCard.appendChild(deleteBtn);
-            container.appendChild(playerCard);
-        });
-    },
-
-    // Supprimer un joueur
-    deletePlayer(index) {
-        if (this.players.length <= 3) {
-            alert('Impossible de supprimer ce joueur. Minimum 3 joueurs requis.');
+        if (currentCount >= 5) {
+            alert('Nombre maximum de joueurs atteint (5)');
             return;
         }
 
-        const playerName = this.players[index].name;
-        if (confirm(`Voulez-vous vraiment supprimer ${playerName} ?`)) {
-            this.players.splice(index, 1);
+        const newCount = currentCount + 1;
+        const inputGroup = document.createElement('div');
+        inputGroup.className = 'player-input-group';
 
-            // Mettre à jour les IDs
-            this.players = this.players.map((player, idx) => ({
-                ...player,
-                id: idx + 1
-            }));
+        const label = document.createElement('label');
+        label.textContent = `Joueur ${newCount}`;
+        label.setAttribute('for', `player-${newCount}`);
 
-            // Sauvegarder l'état mis à jour
-            Storage.saveGameState({
-                players: this.players,
-                round: 1,
-                inProgress: true
-            });
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = `player-${newCount}`;
+        input.name = `player-${newCount}`;
+        input.placeholder = `Pseudo du joueur ${newCount}`;
+        input.required = true;
+        input.maxLength = 20;
 
-            this.displayPlayers();
-            console.log('Joueur supprimé:', playerName);
-        }
+        inputGroup.appendChild(label);
+        inputGroup.appendChild(input);
+        container.appendChild(inputGroup);
+
+        // Focus sur le nouveau champ
+        input.focus();
     },
 
     // Restaurer une partie en cours
@@ -116,51 +98,14 @@ const App = {
         this.players = gameState.players;
         this.currentRound = gameState.round || 1;
         console.log('Partie restaurée:', gameState);
-        this.displayPlayers();
-        this.showScreen('game-area');
-    },
 
-    // Ajouter un joueur
-    addPlayer() {
-        if (this.players.length >= 5) {
-            alert('Nombre maximum de joueurs atteint (5)');
-            return;
+        // Afficher directement l'écran de la manche en cours
+        if (gameState.roundStarted) {
+            this.startRound();
+        } else {
+            // Sinon afficher le tableau des scores
+            this.showScoreboard();
         }
-
-        const name = prompt('Pseudo du nouveau joueur:');
-        if (name && name.trim()) {
-            const newPlayer = {
-                id: this.players.length + 1,
-                name: name.trim(),
-                score: 0
-            };
-            this.players.push(newPlayer);
-
-            // Sauvegarder l'état mis à jour
-            Storage.saveGameState({
-                players: this.players,
-                round: 1,
-                inProgress: true
-            });
-
-            this.displayPlayers();
-            console.log('Joueur ajouté:', newPlayer);
-        }
-    },
-
-    // Modifier les joueurs (retour à l'écran de saisie)
-    modifyPlayers() {
-        this.createPlayerInputs(this.players.length);
-
-        // Pré-remplir les champs avec les noms actuels
-        this.players.forEach((player, index) => {
-            const input = document.getElementById(`player-${index + 1}`);
-            if (input) {
-                input.value = player.name;
-            }
-        });
-
-        this.showScreen('player-names-screen');
     },
 
     // Démarrer une nouvelle partie
@@ -175,6 +120,9 @@ const App = {
         // Sauvegarder les noms des joueurs pour rejouer plus tard
         Storage.saveLastPlayers(playerNames);
 
+        // Réinitialiser à la manche 1
+        this.currentRound = 1;
+
         // Sauvegarder l'état initial
         Storage.saveGameState({
             players: this.players,
@@ -183,8 +131,9 @@ const App = {
         });
 
         console.log('Partie commencée avec les joueurs:', this.players);
-        this.displayPlayers();
-        this.showScreen('game-area');
+
+        // Lancer directement la première manche
+        this.startRound();
     },
 
     // Lancer la manche
@@ -521,23 +470,10 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Partie en cours détectée, restauration...');
         App.restoreGame(gameState);
     } else {
-        // Afficher l'écran d'accueil
+        // Afficher l'écran d'accueil avec 3 joueurs par défaut
         App.showScreen('home-screen');
+        App.createPlayerInputs(3);
     }
-
-    // Bouton "Lancer une partie"
-    document.getElementById('start-game-btn').addEventListener('click', () => {
-        App.showScreen('player-count-screen');
-    });
-
-    // Boutons de sélection du nombre de joueurs
-    document.querySelectorAll('.player-count-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const count = parseInt(e.target.dataset.count);
-            App.createPlayerInputs(count);
-            App.showScreen('player-names-screen');
-        });
-    });
 
     // Formulaire de saisie des pseudos
     document.getElementById('player-names-form').addEventListener('submit', (e) => {
@@ -557,19 +493,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Bouton "Modifier les joueurs"
-    document.getElementById('modify-players-btn').addEventListener('click', () => {
-        App.modifyPlayers();
-    });
-
-    // Bouton "Ajouter un joueur"
+    // Bouton "Ajouter un joueur" (sur la page d'accueil)
     document.getElementById('add-player-btn').addEventListener('click', () => {
-        App.addPlayer();
-    });
-
-    // Bouton "Lancer la partie"
-    document.getElementById('start-round-btn').addEventListener('click', () => {
-        App.startRound();
+        App.addPlayerInput();
     });
 
     // Bouton "Score de la manche"
@@ -627,10 +553,5 @@ document.addEventListener('DOMContentLoaded', () => {
             // Recharger la page pour une mise à jour complète
             window.location.reload();
         }
-    });
-
-    // Bouton "Précédent" de la page pseudos
-    document.getElementById('back-to-count-btn').addEventListener('click', () => {
-        App.showScreen('player-count-screen');
     });
 });

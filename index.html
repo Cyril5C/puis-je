@@ -17,10 +17,17 @@
             <h1>Puis-je</h1>
         </header>
         <main>
-            <!-- Écran d'accueil -->
+            <!-- Écran d'accueil - Saisie des pseudos -->
             <div id="home-screen" class="screen">
-                <button id="start-game-btn" class="btn btn-primary">Lancer une partie</button>
-                <button id="settings-btn" class="btn btn-secondary btn-small">Paramètres</button>
+                <h2>Pseudos des joueurs</h2>
+                <form id="player-names-form">
+                    <div id="player-inputs"></div>
+                    <div class="form-actions">
+                        <button type="button" id="add-player-btn" class="btn btn-secondary btn-small">Ajouter un joueur</button>
+                        <button type="submit" class="btn btn-primary">Lancer la partie</button>
+                        <button type="button" id="settings-btn" class="btn btn-secondary btn-small">Paramètres</button>
+                    </div>
+                </form>
             </div>
 
             <!-- Écran des paramètres -->
@@ -33,37 +40,6 @@
                         <button id="clear-storage-btn" class="btn btn-danger">Effacer le stockage</button>
                     </div>
                     <button id="back-to-home-btn" class="btn btn-secondary">Retour</button>
-                </div>
-            </div>
-
-            <!-- Écran de sélection du nombre de joueurs -->
-            <div id="player-count-screen" class="screen hidden">
-                <h2>Nombre de joueurs</h2>
-                <div class="player-count-buttons">
-                    <button class="btn btn-secondary player-count-btn" data-count="3">3 joueurs</button>
-                    <button class="btn btn-secondary player-count-btn" data-count="4">4 joueurs</button>
-                    <button class="btn btn-secondary player-count-btn" data-count="5">5 joueurs</button>
-                </div>
-            </div>
-
-            <!-- Écran de saisie des pseudos -->
-            <div id="player-names-screen" class="screen hidden">
-                <h2>Pseudos des joueurs</h2>
-                <form id="player-names-form">
-                    <div id="player-inputs"></div>
-                    <button type="submit" class="btn btn-primary">Suivant</button>
-                    <button type="button" id="back-to-count-btn" class="btn btn-secondary btn-small">Précédent</button>
-                </form>
-            </div>
-
-            <!-- Zone de jeu -->
-            <div id="game-area" class="screen hidden">
-                <h2>Participants</h2>
-                <div id="players-list"></div>
-                <div class="game-actions">
-                    <button id="modify-players-btn" class="btn btn-secondary">Modifier les joueurs</button>
-                    <button id="add-player-btn" class="btn btn-secondary">Ajouter un joueur</button>
-                    <button id="start-round-btn" class="btn btn-primary">Lancer la partie</button>
                 </div>
             </div>
 
