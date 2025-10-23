@@ -539,6 +539,43 @@ const App = {
             console.error('Erreur lors du chargement des règles:', error);
             alert('Impossible de charger les règles du jeu.');
         }
+    },
+
+    // Partager les scores finaux
+    async shareScores() {
+        // Trier les joueurs par score
+        const sortedPlayers = [...this.players].sort((a, b) => a.score - b.score);
+
+        // Créer le message avec emojis
+        let message = '🎮 Puis-je - Résultats de la partie 🎮\n\n';
+
+        sortedPlayers.forEach((player, index) => {
+            let emoji = '';
+            if (index === 0) emoji = '🥇'; // Or
+            else if (index === 1) emoji = '🥈'; // Argent
+            else if (index === 2) emoji = '🥉'; // Bronze
+            else emoji = '🎯';
+
+            message += `${emoji} ${index + 1}. ${player.name} : ${player.score} pts\n`;
+        });
+
+        message += '\n✨ Joue avec nous sur puis-je ! ✨';
+
+        // Utiliser la Web Share API si disponible (mobile)
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Puis-je - Résultats',
+                    text: message
+                });
+            } catch (error) {
+                // L'utilisateur a annulé le partage
+                console.log('Partage annulé');
+            }
+        } else {
+            // Pas de partage sur desktop
+            alert('Le partage n\'est disponible que sur mobile');
+        }
     }
 };
 
@@ -550,6 +587,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (darkMode) {
         document.body.classList.add('dark-mode');
         document.getElementById('dark-mode-toggle').checked = true;
+    }
+
+    // Afficher le bouton partage uniquement si la Web Share API est disponible (mobile)
+    if (!navigator.share) {
+        const shareBtn = document.getElementById('share-scores-btn');
+        if (shareBtn) {
+            shareBtn.style.display = 'none';
+        }
     }
 
     // Vérifier s'il y a une partie en cours
@@ -609,6 +654,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Bouton "Nouvelle partie"
     document.getElementById('new-game-btn').addEventListener('click', () => {
         App.endGame();
+    });
+
+    // Bouton "Partager les scores"
+    document.getElementById('share-scores-btn').addEventListener('click', () => {
+        App.shareScores();
     });
 
     // Fermer la modal
