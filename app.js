@@ -545,6 +545,13 @@ const App = {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Application Puis-je initialisée');
 
+    // Charger la préférence de mode sombre
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    if (darkMode) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('dark-mode-toggle').checked = true;
+    }
+
     // Vérifier s'il y a une partie en cours
     const gameState = Storage.getGameState();
     if (gameState && gameState.inProgress) {
@@ -634,6 +641,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Bouton "Retour" des paramètres
     document.getElementById('back-to-home-btn').addEventListener('click', () => {
         App.showScreen('home-screen');
+    });
+
+    // Toggle mode sombre
+    document.getElementById('dark-mode-toggle').addEventListener('change', (e) => {
+        if (e.target.checked) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('darkMode', 'true');
+        } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('darkMode', 'false');
+        }
     });
 
     // Bouton "Effacer le stockage"
