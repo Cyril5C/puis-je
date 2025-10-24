@@ -157,7 +157,7 @@ main {
 }
 
 .screen.hidden {
-    display: none;
+    display: none !important;
 }
 
 h2 {
