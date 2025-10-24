@@ -27,134 +27,6 @@ const App = {
         this.currentScreen = screenId;
     },
 
-    // Créer les champs de saisie pour les pseudos (toujours 3 par défaut)
-    createPlayerInputs() {
-        const container = document.getElementById('player-inputs');
-        container.innerHTML = '';
-
-        // Récupérer les derniers joueurs pour pré-remplir (max 3)
-        const lastPlayers = Storage.getLastPlayers();
-
-        // Toujours afficher 3 champs, même si plus de joueurs étaient sauvegardés
-        for (let i = 1; i <= 3; i++) {
-            const inputGroup = document.createElement('div');
-            inputGroup.className = 'player-input-group';
-
-            const label = document.createElement('label');
-            label.textContent = `Joueur ${i}`;
-            label.setAttribute('for', `player-${i}`);
-
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.id = `player-${i}`;
-            input.name = `player-${i}`;
-            input.placeholder = `Pseudo du joueur ${i}`;
-            input.required = true;
-            input.maxLength = 20;
-
-            // Pré-remplir avec les derniers joueurs si disponibles (max 3)
-            if (lastPlayers && lastPlayers[i - 1]) {
-                input.value = lastPlayers[i - 1];
-            }
-
-            inputGroup.appendChild(label);
-            inputGroup.appendChild(input);
-            container.appendChild(inputGroup);
-        }
-    },
-
-    // Ajouter un champ de joueur sur la page d'accueil
-    addPlayerInput() {
-        const container = document.getElementById('player-inputs');
-        const currentCount = container.children.length;
-
-        if (currentCount >= 5) {
-            alert('Nombre maximum de joueurs atteint (5)');
-            return;
-        }
-
-        const newCount = currentCount + 1;
-        const inputGroup = document.createElement('div');
-        inputGroup.className = 'player-input-group player-input-added';
-
-        const label = document.createElement('label');
-        label.textContent = `Joueur ${newCount}`;
-        label.setAttribute('for', `player-${newCount}`);
-
-        const inputWrapper = document.createElement('div');
-        inputWrapper.className = 'input-with-buttons';
-
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.id = `player-${newCount}`;
-        input.name = `player-${newCount}`;
-        input.placeholder = `Pseudo du joueur ${newCount}`;
-        input.required = false; // Pas obligatoire pour les joueurs ajoutés
-        input.maxLength = 20;
-
-        // Bouton valider
-        const validateBtn = document.createElement('button');
-        validateBtn.type = 'button';
-        validateBtn.className = 'input-action-btn validate-btn';
-        validateBtn.innerHTML = '✓';
-        validateBtn.title = 'Valider';
-        validateBtn.onclick = () => {
-            if (input.value.trim()) {
-                input.required = true;
-                inputGroup.classList.remove('player-input-added');
-                inputWrapper.classList.add('validated');
-                validateBtn.style.display = 'none';
-                deleteBtn.innerHTML = '×';
-                deleteBtn.className = 'input-action-btn delete-btn';
-            } else {
-                alert('Veuillez entrer un pseudo');
-                input.focus();
-            }
-        };
-
-        // Bouton supprimer
-        const deleteBtn = document.createElement('button');
-        deleteBtn.type = 'button';
-        deleteBtn.className = 'input-action-btn delete-btn';
-        deleteBtn.innerHTML = '×';
-        deleteBtn.title = 'Supprimer';
-        deleteBtn.onclick = () => {
-            inputGroup.remove();
-            // Réorganiser les numéros des joueurs
-            this.renumberPlayers();
-        };
-
-        inputWrapper.appendChild(input);
-        inputWrapper.appendChild(validateBtn);
-        inputWrapper.appendChild(deleteBtn);
-
-        inputGroup.appendChild(label);
-        inputGroup.appendChild(inputWrapper);
-        container.appendChild(inputGroup);
-
-        // Focus sur le nouveau champ
-        input.focus();
-    },
-
-    // Renuméroter les joueurs après suppression
-    renumberPlayers() {
-        const container = document.getElementById('player-inputs');
-        const inputGroups = container.children;
-
-        Array.from(inputGroups).forEach((group, index) => {
-            const newNumber = index + 1;
-            const label = group.querySelector('label');
-            const input = group.querySelector('input');
-
-            if (label) label.textContent = `Joueur ${newNumber}`;
-            if (input) {
-                input.id = `player-${newNumber}`;
-                input.name = `player-${newNumber}`;
-                input.placeholder = `Pseudo du joueur ${newNumber}`;
-            }
-        });
-    },
-
     // Restaurer une partie en cours
     restoreGame(gameState) {
         this.players = gameState.players;
@@ -572,11 +444,11 @@ const App = {
                 Storage.saveLastPlayers(lastPlayers);
             }
 
-            console.log('Partie arrêtée - Joueurs conservés en mémoire');
+            console.log('Partie arrêtée - Retour à la sélection des joueurs');
 
-            // Retour à l'écran d'accueil avec les champs de pseudos
-            this.showScreen('home-screen');
-            this.createPlayerInputs();
+            // Retour à l'écran de sélection des joueurs
+            this.showScreen('player-selection-screen');
+            this.loadPlayers();
         }
     },
 
@@ -650,6 +522,28 @@ const App = {
         } catch (error) {
             console.error('❌ Erreur lors de la sauvegarde:', error);
         }
+
+        // Mettre à jour les stats des joueurs
+        try {
+            const sortedPlayers = [...this.players].sort((a, b) => a.score - b.score);
+            const winnerId = sortedPlayers[0].id;
+
+            const playersStats = this.players.map(player => ({
+                name: player.name,
+                won: player.id === winnerId,
+                finalScore: player.score
+            }));
+
+            await fetch('/api/players/update-stats', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ players: playersStats })
+            });
+
+            console.log('✅ Stats des joueurs mises à jour');
+        } catch (error) {
+            console.error('❌ Erreur mise à jour stats:', error);
+        }
     },
 
     // Partager les scores finaux
@@ -687,6 +581,149 @@ const App = {
             // Pas de partage sur desktop
             alert('Le partage n\'est disponible que sur mobile');
         }
+    },
+
+    // Charger et afficher tous les joueurs pour la sélection
+    async loadPlayers() {
+        const container = document.getElementById('players-list');
+        container.innerHTML = '<p class="loading-message">Chargement des joueurs...</p>';
+
+        try {
+            const response = await fetch('/api/players');
+            const data = await response.json();
+
+            this.allPlayers = data.players || [];
+            this.renderPlayersList();
+        } catch (error) {
+            console.error('Erreur lors du chargement des joueurs:', error);
+            container.innerHTML = '<p class="error-message">❌ Impossible de charger les joueurs</p>';
+        }
+    },
+
+    // Afficher la liste des joueurs
+    renderPlayersList() {
+        const container = document.getElementById('players-list');
+        container.innerHTML = '';
+
+        if (this.allPlayers.length === 0) {
+            container.innerHTML = '<p class="no-scores">Aucun joueur enregistré. Ajoute ton premier joueur !</p>';
+            return;
+        }
+
+        this.allPlayers.forEach(player => {
+            const card = document.createElement('div');
+            card.className = 'player-card';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `player-${player.name}`;
+            checkbox.value = player.name;
+            checkbox.checked = this.selectedPlayers.includes(player.name);
+            checkbox.onchange = () => this.togglePlayerSelection(player.name);
+
+            const info = document.createElement('div');
+            info.className = 'player-card-info';
+
+            const name = document.createElement('div');
+            name.className = 'player-card-name';
+            name.textContent = player.name;
+
+            const stats = document.createElement('div');
+            stats.className = 'player-card-stats';
+            const gamesPlayed = player.stats?.gamesPlayed || 0;
+            const gamesWon = player.stats?.gamesWon || 0;
+            stats.textContent = `🎮 ${gamesPlayed} partie${gamesPlayed > 1 ? 's' : ''} | 🏆 ${gamesWon} gagnée${gamesWon > 1 ? 's' : ''}`;
+
+            info.appendChild(name);
+            info.appendChild(stats);
+
+            card.appendChild(checkbox);
+            card.appendChild(info);
+
+            // Rendre toute la carte cliquable
+            card.onclick = (e) => {
+                if (e.target !== checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                    this.togglePlayerSelection(player.name);
+                }
+            };
+
+            // Ajouter classe selected si nécessaire
+            if (this.selectedPlayers.includes(player.name)) {
+                card.classList.add('selected');
+            }
+
+            container.appendChild(card);
+        });
+
+        this.updateSelectionCount();
+    },
+
+    // Gérer la sélection/désélection d'un joueur
+    togglePlayerSelection(playerName) {
+        const index = this.selectedPlayers.indexOf(playerName);
+
+        if (index > -1) {
+            // Désélectionner
+            this.selectedPlayers.splice(index, 1);
+        } else {
+            // Sélectionner (max 5)
+            if (this.selectedPlayers.length < 5) {
+                this.selectedPlayers.push(playerName);
+            } else {
+                alert('❌ Maximum 5 joueurs pour une partie');
+                // Décocher la checkbox
+                const checkbox = document.getElementById(`player-${playerName}`);
+                if (checkbox) checkbox.checked = false;
+                return;
+            }
+        }
+
+        this.updateSelectionCount();
+        this.updatePlayerCards();
+    },
+
+    // Mettre à jour le compteur et le bouton
+    updateSelectionCount() {
+        const count = this.selectedPlayers.length;
+        const countElement = document.getElementById('selection-count');
+        const startBtn = document.getElementById('start-game-btn');
+
+        countElement.textContent = `${count} joueur${count > 1 ? 's' : ''} sélectionné${count > 1 ? 's' : ''}`;
+
+        // Activer le bouton si 3-5 joueurs sélectionnés
+        if (count >= 3 && count <= 5) {
+            startBtn.disabled = false;
+            countElement.style.color = '#4caf50';
+        } else {
+            startBtn.disabled = true;
+            countElement.style.color = count > 5 ? '#e53e3e' : '#667eea';
+        }
+    },
+
+    // Mettre à jour l'apparence des cartes
+    updatePlayerCards() {
+        this.allPlayers.forEach(player => {
+            const card = document.getElementById(`player-${player.name}`)?.parentElement;
+            if (card) {
+                if (this.selectedPlayers.includes(player.name)) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            }
+        });
+    },
+
+    // Démarrer la partie avec les joueurs sélectionnés
+    startGameWithSelectedPlayers() {
+        if (this.selectedPlayers.length < 3 || this.selectedPlayers.length > 5) {
+            alert('❌ Sélectionne entre 3 et 5 joueurs');
+            return;
+        }
+
+        // Démarrer la partie avec les joueurs sélectionnés
+        this.startGame(this.selectedPlayers);
     },
 
     // Afficher les meilleurs scores
@@ -779,9 +816,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (gameState && gameState.inProgress) {
                 App.restoreGame(gameState);
             } else {
-                // Afficher l'écran d'accueil avec 3 joueurs par défaut
-                App.showScreen('home-screen');
-                App.createPlayerInputs(3);
+                // Afficher l'écran de sélection des joueurs
+                App.showScreen('player-selection-screen');
             }
         } else {
             // Mot de passe incorrect
@@ -807,77 +843,82 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Charger les joueurs au démarrage
+    App.loadPlayers();
+
+    // Bouton "Lancer la partie" avec joueurs sélectionnés
+    document.getElementById('start-game-btn').addEventListener('click', () => {
+        App.startGameWithSelectedPlayers();
+    });
+
+    // Bouton "Ajouter un nouveau joueur"
+    document.getElementById('add-new-player-btn').addEventListener('click', () => {
+        document.getElementById('add-player-modal').classList.remove('hidden');
+        document.getElementById('new-player-name').value = '';
+        document.getElementById('new-player-name').focus();
+    });
+
+    // Fermer modal
+    document.getElementById('close-add-player-modal').addEventListener('click', () => {
+        document.getElementById('add-player-modal').classList.add('hidden');
+    });
+
+    // Formulaire ajout nouveau joueur
+    document.getElementById('new-player-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('new-player-name').value.trim();
+
+        if (!name) return;
+
+        try {
+            // Vérifier si le joueur existe déjà
+            const checkResponse = await fetch('/api/players/check', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ names: [name] })
+            });
+
+            const checkResult = await checkResponse.json();
+
+            if (checkResult.existingPlayers && checkResult.existingPlayers.length > 0) {
+                alert(`❌ Le pseudo "${name}" existe déjà. Choisis-en un autre.`);
+                return;
+            }
+
+            // Ajouter le joueur
+            await fetch('/api/players/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ names: [name] })
+            });
+
+            // Fermer le modal et recharger la liste
+            document.getElementById('add-player-modal').classList.add('hidden');
+            await App.loadPlayers();
+
+            alert(`✅ Joueur "${name}" ajouté avec succès !`);
+        } catch (error) {
+            console.error('Erreur:', error);
+            alert('❌ Erreur lors de l\'ajout du joueur');
+        }
+    });
+
+    // Fermer modal en cliquant en dehors
+    document.getElementById('add-player-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'add-player-modal') {
+            document.getElementById('add-player-modal').classList.add('hidden');
+        }
+    });
+
     // Vérifier s'il y a une partie en cours
     const gameState = Storage.getGameState();
     if (gameState && gameState.inProgress) {
         console.log('Partie en cours détectée, restauration...');
         App.restoreGame(gameState);
     } else {
-        // Afficher l'écran d'accueil avec 3 joueurs par défaut
-        App.showScreen('home-screen');
-        App.createPlayerInputs(3);
+        // Afficher l'écran de sélection des joueurs
+        App.showScreen('player-selection-screen');
     }
-
-    // Formulaire de saisie des pseudos
-    document.getElementById('player-names-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const formData = new FormData(e.target);
-        const playerNames = [];
-
-        for (let [key, value] of formData.entries()) {
-            if (value.trim()) {
-                playerNames.push(value.trim());
-            }
-        }
-
-        // Vérifier que les pseudos sont uniques dans la partie en cours
-        const uniqueNames = new Set(playerNames);
-        if (uniqueNames.size !== playerNames.length) {
-            alert('❌ Erreur : Les pseudos doivent être uniques dans cette partie. Veuillez choisir des noms différents pour chaque joueur.');
-            return;
-        }
-
-        // Vérifier que les pseudos n'ont pas déjà été utilisés
-        try {
-            const response = await fetch('/api/players/check', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ names: playerNames })
-            });
-
-            const result = await response.json();
-
-            if (result.existingPlayers && result.existingPlayers.length > 0) {
-                const existingList = result.existingPlayers.join(', ');
-                alert(`❌ Erreur : Les pseudos suivants sont déjà utilisés : ${existingList}\n\nChaque pseudo ne peut être utilisé qu'une seule fois. Veuillez en choisir de nouveaux.`);
-                return;
-            }
-        } catch (error) {
-            console.error('Erreur lors de la vérification des pseudos:', error);
-            // Continuer quand même en cas d'erreur
-        }
-
-        if (playerNames.length >= 3 && playerNames.length <= 5) {
-            // Enregistrer les nouveaux pseudos
-            try {
-                await fetch('/api/players/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ names: playerNames })
-                });
-            } catch (error) {
-                console.error('Erreur lors de l\'enregistrement des pseudos:', error);
-            }
-
-            App.startGame(playerNames);
-        }
-    });
-
-    // Bouton "Ajouter un joueur" (sur la page d'accueil)
-    document.getElementById('add-player-btn').addEventListener('click', () => {
-        App.addPlayerInput();
-    });
 
     // Bouton "Score de la manche"
     document.getElementById('round-score-btn').addEventListener('click', () => {
@@ -911,7 +952,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Bouton "Retour" depuis les meilleurs scores
     document.getElementById('back-from-best-scores-btn').addEventListener('click', () => {
-        App.showScreen('home-screen');
+        App.showScreen('player-selection-screen');
     });
 
     // Bouton "Partager les scores"
@@ -938,7 +979,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Bouton "Retour" des règles
     document.getElementById('back-from-rules-btn').addEventListener('click', () => {
-        App.showScreen('home-screen');
+        App.showScreen('player-selection-screen');
     });
 
     // Bouton "Paramètres"
@@ -948,7 +989,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Bouton "Retour" des paramètres
     document.getElementById('back-to-home-btn').addEventListener('click', () => {
-        App.showScreen('home-screen');
+        App.showScreen('player-selection-screen');
     });
 
     // Toggle mode sombre
