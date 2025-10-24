@@ -126,6 +126,23 @@ async function getStats() {
         .sort((a, b) => b.wins - a.wins)
         .slice(0, 10);
 
+    // Top 3 meilleurs scores (scores les plus bas)
+    const allScores = [];
+    games.forEach(game => {
+        if (game.winnerScore !== undefined && game.winner) {
+            allScores.push({
+                score: game.winnerScore,
+                player: game.winner,
+                date: game.date
+            });
+        }
+    });
+
+    // Trier par score croissant (le plus bas est le meilleur) et prendre les 3 premiers
+    const bestScores = allScores
+        .sort((a, b) => a.score - b.score)
+        .slice(0, 3);
+
     // Score moyen par manche
     const scoresByRound = {};
     games.forEach(game => {
@@ -156,6 +173,7 @@ async function getStats() {
         totalGames,
         totalPlayers,
         averagePlayersPerGame: totalGames > 0 ? Math.round(totalPlayers / totalGames * 10) / 10 : 0,
+        bestScores,
         topWinners,
         averageScoresByRound,
         lastUpdate: data.stats?.lastUpdate || null
