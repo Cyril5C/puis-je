@@ -116,9 +116,12 @@ body.dark-mode .player-card-count h3 {
 }
 
 header {
-    text-align: center;
-    padding: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
     border-bottom: 2px solid #f0f0f0;
+    position: relative;
 }
 
 h1 {
@@ -1358,5 +1361,136 @@ body.dark-mode .player-card-stats {
     gap: 1rem;
     width: 100%;
     max-width: 500px;
+}
+
+/* Menu hamburger */
+.hamburger-menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 1001;
+}
+
+.hamburger-menu-btn span {
+    display: block;
+    width: 28px;
+    height: 3px;
+    background-color: #667eea;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+body.dark-mode .hamburger-menu-btn span {
+    background-color: #8b9dc3;
+}
+
+.hamburger-menu-btn:hover span {
+    background-color: #764ba2;
+}
+
+body.dark-mode .hamburger-menu-btn:hover span {
+    background-color: #a0aec0;
+}
+
+/* Animation hamburger vers X */
+.hamburger-menu-btn.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
+
+.hamburger-menu-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu-btn.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Menu déroulant */
+.hamburger-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100vh;
+    background: white;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    padding-top: 80px;
+}
+
+body.dark-mode .hamburger-menu {
+    background: #1a1a2e;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.hamburger-menu.hidden {
+    transform: translateX(100%);
+}
+
+.hamburger-menu:not(.hidden) {
+    transform: translateX(0);
+}
+
+.hamburger-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hamburger-menu li {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+body.dark-mode .hamburger-menu li {
+    border-bottom: 1px solid #2d3748;
+}
+
+.menu-item {
+    width: 100%;
+    padding: 1.25rem 1.5rem;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 1.1rem;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+body.dark-mode .menu-item {
+    color: #e0e0e0;
+}
+
+.menu-item:hover {
+    background: #f7fafc;
+}
+
+body.dark-mode .menu-item:hover {
+    background: #2d3748;
+}
+
+/* Overlay pour fermer le menu */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+}
+
+.menu-overlay.visible {
+    display: block;
 }
 

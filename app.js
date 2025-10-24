@@ -726,6 +726,36 @@ const App = {
         this.startGame(this.selectedPlayers);
     },
 
+    // Ouvrir/fermer le menu hamburger
+    toggleHamburgerMenu() {
+        const menu = document.getElementById('hamburger-menu');
+        const overlay = document.getElementById('menu-overlay');
+        const btn = document.getElementById('hamburger-menu-btn');
+
+        if (menu.classList.contains('hidden')) {
+            // Ouvrir le menu
+            menu.classList.remove('hidden');
+            overlay.classList.add('visible');
+            btn.classList.add('active');
+        } else {
+            // Fermer le menu
+            menu.classList.add('hidden');
+            overlay.classList.remove('visible');
+            btn.classList.remove('active');
+        }
+    },
+
+    // Fermer le menu hamburger
+    closeHamburgerMenu() {
+        const menu = document.getElementById('hamburger-menu');
+        const overlay = document.getElementById('menu-overlay');
+        const btn = document.getElementById('hamburger-menu-btn');
+
+        menu.classList.add('hidden');
+        overlay.classList.remove('visible');
+        btn.classList.remove('active');
+    },
+
     // Afficher les meilleurs scores
     async showBestScores() {
         const container = document.getElementById('best-scores-content');
@@ -806,6 +836,32 @@ document.addEventListener('DOMContentLoaded', () => {
             shareBtn.style.display = 'none';
         }
     }
+
+    // Menu hamburger
+    document.getElementById('hamburger-menu-btn').addEventListener('click', () => {
+        App.toggleHamburgerMenu();
+    });
+
+    // Fermer le menu en cliquant sur l'overlay
+    document.getElementById('menu-overlay').addEventListener('click', () => {
+        App.closeHamburgerMenu();
+    });
+
+    // Menu items
+    document.getElementById('menu-rules-btn').addEventListener('click', () => {
+        App.closeHamburgerMenu();
+        App.loadRules();
+    });
+
+    document.getElementById('menu-best-scores-btn').addEventListener('click', () => {
+        App.closeHamburgerMenu();
+        App.showBestScores();
+    });
+
+    document.getElementById('menu-settings-btn').addEventListener('click', () => {
+        App.closeHamburgerMenu();
+        App.showScreen('settings-screen');
+    });
 
     // Formulaire de connexion (doit être défini AVANT la vérification d'authentification)
     document.getElementById('login-form').addEventListener('submit', (e) => {
@@ -954,19 +1010,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Bouton "Règles du jeu"
-    document.getElementById('rules-btn').addEventListener('click', () => {
-        App.loadRules();
-    });
-
     // Bouton "Retour" des règles
     document.getElementById('back-from-rules-btn').addEventListener('click', () => {
         App.showScreen('player-selection-screen');
-    });
-
-    // Bouton "Paramètres"
-    document.getElementById('settings-btn').addEventListener('click', () => {
-        App.showScreen('settings-screen');
     });
 
     // Bouton "Retour" des paramètres

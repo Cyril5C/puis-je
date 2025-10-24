@@ -26,7 +26,25 @@
     <div class="container">
         <header>
             <h1>Puis-je</h1>
+            <button id="hamburger-menu-btn" class="hamburger-menu-btn" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </header>
+
+        <!-- Overlay du menu -->
+        <div id="menu-overlay" class="menu-overlay"></div>
+
+        <!-- Menu hamburger -->
+        <nav id="hamburger-menu" class="hamburger-menu hidden">
+            <ul>
+                <li><button id="menu-rules-btn" class="menu-item">📖 Règles du jeu</button></li>
+                <li><button id="menu-best-scores-btn" class="menu-item">🏆 Meilleurs scores</button></li>
+                <li><button id="menu-settings-btn" class="menu-item">⚙️ Paramètres</button></li>
+            </ul>
+        </nav>
+
         <main>
             <!-- Écran de connexion -->
             <div id="login-screen" class="screen">
@@ -51,10 +69,6 @@
                 <div class="selection-actions">
                     <button type="button" id="add-new-player-btn" class="btn btn-secondary">+ Ajouter un nouveau joueur</button>
                     <button type="button" id="start-game-btn" class="btn btn-primary" disabled>Lancer la partie</button>
-                    <div class="bottom-links">
-                        <button type="button" id="rules-btn" class="btn btn-secondary btn-small">Règles du jeu</button>
-                        <button type="button" id="settings-btn" class="btn btn-secondary btn-small">Paramètres</button>
-                    </div>
                 </div>
             </div>
 
