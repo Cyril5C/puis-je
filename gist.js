@@ -1,17 +1,47 @@
-// Module pour gérer la sauvegarde des parties sur GitHub Gist
+// Module pour gérer la sauvegarde des parties sur GitHub Gist ou fichier local
+
+const fs = require('fs').promises;
+const path = require('path');
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GIST_ID = process.env.GIST_ID;
+const LOCAL_FILE = path.join(__dirname, 'games-local.json');
 
 const GIST_API_URL = `https://api.github.com/gists/${GIST_ID}`;
+
+/**
+ * Récupérer les données du fichier local
+ */
+async function getLocalData() {
+    try {
+        const data = await fs.readFile(LOCAL_FILE, 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        // Si le fichier n'existe pas, retourner une structure vide
+        return { games: [], stats: { totalGames: 0 } };
+    }
+}
+
+/**
+ * Sauvegarder les données dans le fichier local
+ */
+async function saveLocalData(data) {
+    try {
+        await fs.writeFile(LOCAL_FILE, JSON.stringify(data, null, 2), 'utf8');
+        return true;
+    } catch (error) {
+        console.error('Error saving to local file:', error);
+        return false;
+    }
+}
 
 /**
  * Récupérer les données du Gist
  */
 async function getGistData() {
     if (!GITHUB_TOKEN || !GIST_ID) {
-        console.warn('GitHub credentials not configured. Skipping data sync.');
-        return { games: [] };
+        console.warn('GitHub credentials not configured. Using local file.');
+        return await getLocalData();
     }
 
     try {
@@ -42,8 +72,8 @@ async function getGistData() {
  */
 async function saveGistData(data) {
     if (!GITHUB_TOKEN || !GIST_ID) {
-        console.warn('GitHub credentials not configured. Skipping data sync.');
-        return false;
+        console.warn('GitHub credentials not configured. Using local file.');
+        return await saveLocalData(data);
     }
 
     try {

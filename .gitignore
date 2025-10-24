@@ -26,3 +26,7 @@ Thumbs.db
 # Build
 dist/
 build/
+
+# Local development data
+games-local.json
+players.json

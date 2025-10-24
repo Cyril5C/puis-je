@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const { addGame, getStats } = require('./gist');
+const { checkPlayers, addPlayers, getAllPlayerNames } = require('./players');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,7 +31,8 @@ app.post('/api/games', async (req, res) => {
         if (savedGame) {
             res.json({ success: true, game: savedGame });
         } else {
-            res.status(500).json({ success: false, error: 'Failed to save game' });
+            // GitHub non configuré, renvoyer succès quand même
+            res.json({ success: true, message: 'GitHub not configured, game not saved remotely' });
         }
     } catch (error) {
         console.error('Error saving game:', error);
@@ -45,6 +47,41 @@ app.get('/api/stats', async (req, res) => {
         res.json(stats);
     } catch (error) {
         console.error('Error getting stats:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Vérifier si des pseudos existent déjà
+app.post('/api/players/check', async (req, res) => {
+    try {
+        const { names } = req.body;
+        const existingPlayers = await checkPlayers(names);
+        res.json({ existingPlayers });
+    } catch (error) {
+        console.error('Error checking players:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Enregistrer de nouveaux pseudos
+app.post('/api/players/register', async (req, res) => {
+    try {
+        const { names } = req.body;
+        const added = await addPlayers(names);
+        res.json({ success: true, added });
+    } catch (error) {
+        console.error('Error registering players:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// Obtenir tous les pseudos
+app.get('/api/players', async (req, res) => {
+    try {
+        const names = await getAllPlayerNames();
+        res.json({ players: names });
+    } catch (error) {
+        console.error('Error getting players:', error);
         res.status(500).json({ error: error.message });
     }
 });

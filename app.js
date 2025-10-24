@@ -5,6 +5,7 @@ const App = {
     players: [],
     currentScreen: 'home-screen',
     currentRound: 1,
+    gameStartTime: null,
 
     // Missions par manche
     missions: {
@@ -176,6 +177,9 @@ const App = {
             roundScores: [] // Historique des scores par manche
         }));
 
+        // Démarrer le chronomètre
+        this.gameStartTime = Date.now();
+
         // Sauvegarder les noms des joueurs pour rejouer plus tard
         Storage.saveLastPlayers(playerNames);
 
@@ -298,6 +302,10 @@ const App = {
     updatePlayerTotal(playerId) {
         const input = document.getElementById(`cards-${playerId}`);
         const total = document.getElementById(`total-${playerId}`);
+
+        // Si l'élément total n'existe pas (commenté dans le DOM), ne rien faire
+        if (!total) return;
+
         const cardCount = parseInt(input.value);
 
         if (input.value && cardCount > 0) {
@@ -407,12 +415,51 @@ const App = {
     },
 
     // Afficher les scores finaux
-    showFinalScore() {
+    async showFinalScore() {
         const container = document.getElementById('final-scoreboard');
         container.innerHTML = '';
 
         // Trier les joueurs par score (ordre croissant, le plus petit score gagne)
         const sortedPlayers = [...this.players].sort((a, b) => a.score - b.score);
+        const winnerScore = sortedPlayers[0].score;
+
+        // Vérifier si c'est un nouveau record
+        try {
+            const response = await fetch('/api/stats');
+            if (response.ok) {
+                const stats = await response.json();
+                const isNewRecord = !stats.bestScores || stats.bestScores.length === 0 ||
+                                   winnerScore < stats.bestScores[0].score;
+
+                if (isNewRecord) {
+                    const recordMessage = document.createElement('div');
+                    recordMessage.className = 'record-message';
+                    recordMessage.innerHTML = `
+                        <div class="record-icon">🏆</div>
+                        <div class="record-text">
+                            <strong>NOUVEAU RECORD !</strong><br>
+                            Félicitations ${sortedPlayers[0].name} ! 🎉
+                        </div>
+                    `;
+                    container.appendChild(recordMessage);
+                }
+            }
+        } catch (error) {
+            console.log('Could not check for record:', error);
+        }
+
+        // Calculer et afficher le temps de jeu
+        if (this.gameStartTime) {
+            const gameEndTime = Date.now();
+            const gameDuration = gameEndTime - this.gameStartTime;
+            const minutes = Math.floor(gameDuration / 60000);
+            const seconds = Math.floor((gameDuration % 60000) / 1000);
+
+            const timeInfo = document.createElement('p');
+            timeInfo.className = 'game-duration';
+            timeInfo.textContent = `⏱️ Durée de la partie : ${minutes}min ${seconds}s`;
+            container.appendChild(timeInfo);
+        }
 
         sortedPlayers.forEach((player, index) => {
             const row = document.createElement('div');
@@ -446,7 +493,7 @@ const App = {
         this.showScreen('final-score-screen');
 
         // Sauvegarder la partie sur le serveur
-        this.saveGameToServer();
+        await this.saveGameToServer();
     },
 
     // Afficher les détails des manches d'un joueur
@@ -638,6 +685,64 @@ const App = {
             // Pas de partage sur desktop
             alert('Le partage n\'est disponible que sur mobile');
         }
+    },
+
+    // Afficher les meilleurs scores
+    async showBestScores() {
+        const container = document.getElementById('best-scores-content');
+        container.innerHTML = '<p class="loading-message">Chargement des scores...</p>';
+
+        this.showScreen('best-scores-screen');
+
+        try {
+            const response = await fetch('/api/stats');
+            if (!response.ok) {
+                throw new Error('Erreur lors du chargement des statistiques');
+            }
+
+            const stats = await response.json();
+            container.innerHTML = '';
+
+            if (stats.bestScores && stats.bestScores.length > 0) {
+                const podium = document.createElement('div');
+                podium.className = 'best-scores-podium';
+
+                stats.bestScores.forEach((scoreEntry, index) => {
+                    const scoreCard = document.createElement('div');
+                    scoreCard.className = 'best-score-card';
+
+                    if (index === 0) scoreCard.classList.add('gold');
+                    else if (index === 1) scoreCard.classList.add('silver');
+                    else if (index === 2) scoreCard.classList.add('bronze');
+
+                    const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+                    const date = new Date(scoreEntry.date).toLocaleDateString('fr-FR', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                    });
+
+                    scoreCard.innerHTML = `
+                        <div class="medal">${medal}</div>
+                        <div class="rank">#${index + 1}</div>
+                        <div class="player-info">
+                            <div class="player-name">${scoreEntry.player}</div>
+                            <div class="score">${scoreEntry.score} points</div>
+                            <div class="date">${date}</div>
+                        </div>
+                    `;
+
+                    podium.appendChild(scoreCard);
+                });
+
+                container.appendChild(podium);
+            } else {
+                container.innerHTML = '<p class="no-scores">Aucun score enregistré pour le moment. Jouez votre première partie !</p>';
+            }
+        } catch (error) {
+            console.error('Erreur lors du chargement des meilleurs scores:', error);
+            container.innerHTML = '<p class="error-message">❌ Impossible de charger les scores. Vérifiez votre connexion.</p>';
+        }
     }
 };
 
@@ -655,34 +760,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (darkModeToggle) darkModeToggle.checked = true;
     }
 
-    // Vérifier si l'utilisateur est connecté
-    const isAuthenticated = sessionStorage.getItem('authenticated') === 'true';
-    if (!isAuthenticated) {
-        // Afficher l'écran de connexion
-        App.showScreen('login-screen');
-        return;
-    }
-
-    // Afficher le bouton partage uniquement si la Web Share API est disponible (mobile)
-    if (!navigator.share) {
-        const shareBtn = document.getElementById('share-scores-btn');
-        if (shareBtn) {
-            shareBtn.style.display = 'none';
-        }
-    }
-
-    // Vérifier s'il y a une partie en cours
-    const gameState = Storage.getGameState();
-    if (gameState && gameState.inProgress) {
-        console.log('Partie en cours détectée, restauration...');
-        App.restoreGame(gameState);
-    } else {
-        // Afficher l'écran d'accueil avec 3 joueurs par défaut
-        App.showScreen('home-screen');
-        App.createPlayerInputs(3);
-    }
-
-    // Formulaire de connexion
+    // Formulaire de connexion (doit être défini AVANT la vérification d'authentification)
     document.getElementById('login-form').addEventListener('submit', (e) => {
         e.preventDefault();
         const passwordInput = document.getElementById('password-input');
@@ -711,8 +789,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Vérifier si l'utilisateur est connecté
+    const isAuthenticated = sessionStorage.getItem('authenticated') === 'true';
+    if (!isAuthenticated) {
+        // Afficher l'écran de connexion
+        App.showScreen('login-screen');
+        return;
+    }
+
+    // Afficher le bouton partage uniquement si la Web Share API est disponible (mobile)
+    if (!navigator.share) {
+        const shareBtn = document.getElementById('share-scores-btn');
+        if (shareBtn) {
+            shareBtn.style.display = 'none';
+        }
+    }
+
+    // Vérifier s'il y a une partie en cours
+    const gameState = Storage.getGameState();
+    if (gameState && gameState.inProgress) {
+        console.log('Partie en cours détectée, restauration...');
+        App.restoreGame(gameState);
+    } else {
+        // Afficher l'écran d'accueil avec 3 joueurs par défaut
+        App.showScreen('home-screen');
+        App.createPlayerInputs(3);
+    }
+
     // Formulaire de saisie des pseudos
-    document.getElementById('player-names-form').addEventListener('submit', (e) => {
+    document.getElementById('player-names-form').addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
@@ -724,7 +829,45 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Vérifier que les pseudos sont uniques dans la partie en cours
+        const uniqueNames = new Set(playerNames);
+        if (uniqueNames.size !== playerNames.length) {
+            alert('❌ Erreur : Les pseudos doivent être uniques dans cette partie. Veuillez choisir des noms différents pour chaque joueur.');
+            return;
+        }
+
+        // Vérifier que les pseudos n'ont pas déjà été utilisés
+        try {
+            const response = await fetch('/api/players/check', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ names: playerNames })
+            });
+
+            const result = await response.json();
+
+            if (result.existingPlayers && result.existingPlayers.length > 0) {
+                const existingList = result.existingPlayers.join(', ');
+                alert(`❌ Erreur : Les pseudos suivants sont déjà utilisés : ${existingList}\n\nChaque pseudo ne peut être utilisé qu'une seule fois. Veuillez en choisir de nouveaux.`);
+                return;
+            }
+        } catch (error) {
+            console.error('Erreur lors de la vérification des pseudos:', error);
+            // Continuer quand même en cas d'erreur
+        }
+
         if (playerNames.length >= 3 && playerNames.length <= 5) {
+            // Enregistrer les nouveaux pseudos
+            try {
+                await fetch('/api/players/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ names: playerNames })
+                });
+            } catch (error) {
+                console.error('Erreur lors de l\'enregistrement des pseudos:', error);
+            }
+
             App.startGame(playerNames);
         }
     });
@@ -757,6 +900,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Bouton "Nouvelle partie"
     document.getElementById('new-game-btn').addEventListener('click', () => {
         App.endGame();
+    });
+
+    // Bouton "Meilleurs scores" depuis la page finale
+    document.getElementById('view-best-scores-btn').addEventListener('click', () => {
+        App.showBestScores();
+    });
+
+    // Bouton "Retour" depuis les meilleurs scores
+    document.getElementById('back-from-best-scores-btn').addEventListener('click', () => {
+        App.showScreen('home-screen');
     });
 
     // Bouton "Partager les scores"

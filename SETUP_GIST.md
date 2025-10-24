@@ -1,8 +1,10 @@
-# Configuration GitHub Gist pour la sauvegarde des parties
+# Configuration GitHub Gist pour la sauvegarde des données
 
-Ce guide explique comment configurer GitHub Gist pour sauvegarder automatiquement toutes les parties jouées.
+Ce guide explique comment configurer GitHub Gist pour sauvegarder automatiquement les parties et les pseudos.
 
-## 📝 Étape 1 : Créer un Gist
+## 📝 Étape 1 : Créer les Gists
+
+### Gist 1 : Les parties (games)
 
 1. Va sur https://gist.github.com
 2. Connecte-toi avec ton compte GitHub
@@ -20,15 +22,33 @@ Ce guide explique comment configurer GitHub Gist pour sauvegarder automatiquemen
    ```
 4. Choisis **"Create secret gist"** (privé)
 5. Clique sur **"Create secret gist"**
+6. Note le **Gist ID** dans l'URL (ex: `a1b2c3d4e5f6g7h8i9j0`)
 
-## 🔑 Étape 2 : Récupérer le Gist ID
+### Gist 2 : Les pseudos (players)
 
-Après création, l'URL ressemble à :
+1. Crée un **nouveau Gist** sur https://gist.github.com
+2. Crée avec :
+   - **Filename** : `puisje-players.json`
+   - **Content** :
+   ```json
+   {
+     "players": []
+   }
+   ```
+3. Choisis **"Create secret gist"** (privé)
+4. Clique sur **"Create secret gist"**
+5. Note le **Gist ID** dans l'URL (différent du premier !)
+
+## 🔑 Étape 2 : Récupérer les Gist IDs
+
+Après création de chaque Gist, l'URL ressemble à :
 ```
 https://gist.github.com/ton-username/a1b2c3d4e5f6g7h8i9j0
 ```
 
 Le **Gist ID** est : `a1b2c3d4e5f6g7h8i9j0` (la longue chaîne à la fin)
+
+⚠️ **Important** : Tu auras **2 Gist IDs différents** (un pour les parties, un pour les pseudos)
 
 ## 🎫 Étape 3 : Créer un Token GitHub
 
@@ -44,9 +64,10 @@ Le **Gist ID** est : `a1b2c3d4e5f6g7h8i9j0` (la longue chaîne à la fin)
 1. Va sur le [Dashboard Railway](https://railway.app)
 2. Sélectionne ton projet `puis-je`
 3. Clique sur l'onglet **"Variables"**
-4. Ajoute ces deux variables :
-   - **GITHUB_TOKEN** = `ton_token_github`
-   - **GIST_ID** = `ton_gist_id`
+4. Ajoute ces **trois** variables :
+   - **GITHUB_TOKEN** = `ton_token_github` (le même pour les deux Gists)
+   - **GIST_ID** = `gist_id_des_parties`
+   - **PLAYERS_GIST_ID** = `gist_id_des_pseudos`
 5. Clique sur **"Deploy"** pour redémarrer avec les nouvelles variables
 
 ## ✅ Étape 5 : Vérifier que ça fonctionne

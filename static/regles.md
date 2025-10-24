@@ -1,5 +1,3 @@
-# Règles du jeu "Puis-je"
-
 ## Objectif
 Être le joueur avec le **plus petit score** à la fin des 5 manches.
 
@@ -39,11 +37,11 @@ Pour terminer, un joueur doit réaliser la **mission de la manche** et ne plus a
 - Exemple : 3♥ 3♠ 3♦ et 7♣ 7♥ 7♦
 
 #### Manche 2 : Une suite + Un brelan
-- Suite de 4 cartes minimum : 4♠ 5♥ 6♦ 7♣
+- Suite de 4 cartes minimum : 4♠ 5♠ 6♠ 7♠
 - Brelan : 9♥ 9♠ 9♦
 
 #### Manche 3 : Deux suites
-- Exemple : 2♠ 3♥ 4♦ 5♣ et 8♥ 9♠ 10♦
+- Exemple : 2♥ 3♥ 4♥ 5♥ et 8♠ 9♠ 10♠ J♠
 
 #### Manche 4 : Trois brelans
 - Exemple : 2♥ 2♠ 2♦, 5♣ 5♥ 5♦, K♥ K♠ K♦
