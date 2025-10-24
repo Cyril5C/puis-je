@@ -799,6 +799,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (darkModeToggle) darkModeToggle.checked = true;
     }
 
+    // Afficher le bouton partage uniquement si la Web Share API est disponible (mobile)
+    if (!navigator.share) {
+        const shareBtn = document.getElementById('share-scores-btn');
+        if (shareBtn) {
+            shareBtn.style.display = 'none';
+        }
+    }
+
     // Formulaire de connexion (doit être défini AVANT la vérification d'authentification)
     document.getElementById('login-form').addEventListener('submit', (e) => {
         e.preventDefault();
@@ -810,6 +818,9 @@ document.addEventListener('DOMContentLoaded', () => {
             sessionStorage.setItem('authenticated', 'true');
             loginError.classList.add('hidden');
             passwordInput.value = '';
+
+            // Charger les joueurs
+            App.loadPlayers();
 
             // Vérifier s'il y a une partie en cours
             const gameState = Storage.getGameState();
@@ -826,25 +837,6 @@ document.addEventListener('DOMContentLoaded', () => {
             passwordInput.focus();
         }
     });
-
-    // Vérifier si l'utilisateur est connecté
-    const isAuthenticated = sessionStorage.getItem('authenticated') === 'true';
-    if (!isAuthenticated) {
-        // Afficher l'écran de connexion
-        App.showScreen('login-screen');
-        return;
-    }
-
-    // Afficher le bouton partage uniquement si la Web Share API est disponible (mobile)
-    if (!navigator.share) {
-        const shareBtn = document.getElementById('share-scores-btn');
-        if (shareBtn) {
-            shareBtn.style.display = 'none';
-        }
-    }
-
-    // Charger les joueurs au démarrage
-    App.loadPlayers();
 
     // Bouton "Lancer la partie" avec joueurs sélectionnés
     document.getElementById('start-game-btn').addEventListener('click', () => {
@@ -909,16 +901,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('add-player-modal').classList.add('hidden');
         }
     });
-
-    // Vérifier s'il y a une partie en cours
-    const gameState = Storage.getGameState();
-    if (gameState && gameState.inProgress) {
-        console.log('Partie en cours détectée, restauration...');
-        App.restoreGame(gameState);
-    } else {
-        // Afficher l'écran de sélection des joueurs
-        App.showScreen('player-selection-screen');
-    }
 
     // Bouton "Score de la manche"
     document.getElementById('round-score-btn').addEventListener('click', () => {
@@ -1012,4 +994,24 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.reload();
         }
     });
+
+    // Vérifier si l'utilisateur est connecté et initialiser l'application
+    const isAuthenticated = sessionStorage.getItem('authenticated') === 'true';
+    if (!isAuthenticated) {
+        // Afficher l'écran de connexion
+        App.showScreen('login-screen');
+    } else {
+        // Charger les joueurs au démarrage
+        App.loadPlayers();
+
+        // Vérifier s'il y a une partie en cours
+        const gameState = Storage.getGameState();
+        if (gameState && gameState.inProgress) {
+            console.log('Partie en cours détectée, restauration...');
+            App.restoreGame(gameState);
+        } else {
+            // Afficher l'écran de sélection des joueurs
+            App.showScreen('player-selection-screen');
+        }
+    }
 });
