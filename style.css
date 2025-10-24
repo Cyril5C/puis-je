@@ -1263,3 +1263,100 @@ body.dark-mode .no-scores {
 .error-message {
     color: #e53e3e;
 }
+
+/* Écran de sélection des joueurs */
+.selection-subtitle {
+    text-align: center;
+    color: #667eea;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+body.dark-mode .selection-subtitle {
+    color: #8b9dc3;
+}
+
+.players-list {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.player-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 12px;
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.player-card:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.player-card.selected {
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+}
+
+body.dark-mode .player-card {
+    background: #1a202c;
+    border-color: #2d3748;
+}
+
+body.dark-mode .player-card:hover {
+    border-color: #8b9dc3;
+}
+
+body.dark-mode .player-card.selected {
+    border-color: #8b9dc3;
+    background: rgba(139, 157, 195, 0.1);
+}
+
+.player-card input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.player-card-info {
+    flex: 1;
+}
+
+.player-card-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+body.dark-mode .player-card-name {
+    color: #e0e0e0;
+}
+
+.player-card-stats {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+body.dark-mode .player-card-stats {
+    color: #a0aec0;
+}
+
+.selection-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 500px;
+}
+

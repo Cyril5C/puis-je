@@ -142,7 +142,7 @@ async function checkPlayers(names) {
 }
 
 /**
- * Ajouter un nouveau joueur
+ * Ajouter un nouveau joueur avec stats initiales
  */
 async function addPlayer(name) {
     const data = await getPlayers();
@@ -153,10 +153,16 @@ async function addPlayer(name) {
         return false;
     }
 
-    // Ajouter le nouveau joueur
+    // Ajouter le nouveau joueur avec stats initiales
     data.players.push({
         name: name,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        stats: {
+            gamesPlayed: 0,
+            gamesWon: 0,
+            bestScore: null,
+            bestScoreDate: null
+        }
     });
 
     await savePlayers(data);
@@ -164,7 +170,7 @@ async function addPlayer(name) {
 }
 
 /**
- * Ajouter plusieurs joueurs
+ * Ajouter plusieurs joueurs avec stats initiales
  */
 async function addPlayers(names) {
     const data = await getPlayers();
@@ -175,7 +181,13 @@ async function addPlayers(names) {
         if (!exists) {
             data.players.push({
                 name: name,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                stats: {
+                    gamesPlayed: 0,
+                    gamesWon: 0,
+                    bestScore: null,
+                    bestScoreDate: null
+                }
             });
             added++;
         }
@@ -196,11 +208,87 @@ async function getAllPlayerNames() {
     return data.players.map(p => p.name);
 }
 
+/**
+ * Mettre à jour les stats d'un joueur après une partie
+ */
+async function updatePlayerStats(playerName, won, finalScore) {
+    const data = await getPlayers();
+
+    const player = data.players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
+    if (!player) {
+        return false;
+    }
+
+    // Initialiser les stats si elles n'existent pas
+    if (!player.stats) {
+        player.stats = {
+            gamesPlayed: 0,
+            gamesWon: 0,
+            bestScore: null,
+            bestScoreDate: null
+        };
+    }
+
+    // Mettre à jour les stats
+    player.stats.gamesPlayed++;
+    if (won) {
+        player.stats.gamesWon++;
+    }
+
+    // Mettre à jour le meilleur score si c'est un nouveau record personnel
+    if (player.stats.bestScore === null || finalScore < player.stats.bestScore) {
+        player.stats.bestScore = finalScore;
+        player.stats.bestScoreDate = new Date().toISOString();
+    }
+
+    await savePlayers(data);
+    return true;
+}
+
+/**
+ * Mettre à jour les stats de plusieurs joueurs après une partie
+ */
+async function updateMultiplePlayersStats(playersData) {
+    const data = await getPlayers();
+
+    playersData.forEach(({ name, won, finalScore }) => {
+        const player = data.players.find(p => p.name.toLowerCase() === name.toLowerCase());
+        if (player) {
+            // Initialiser les stats si elles n'existent pas
+            if (!player.stats) {
+                player.stats = {
+                    gamesPlayed: 0,
+                    gamesWon: 0,
+                    bestScore: null,
+                    bestScoreDate: null
+                };
+            }
+
+            // Mettre à jour les stats
+            player.stats.gamesPlayed++;
+            if (won) {
+                player.stats.gamesWon++;
+            }
+
+            // Mettre à jour le meilleur score si c'est un nouveau record personnel
+            if (player.stats.bestScore === null || finalScore < player.stats.bestScore) {
+                player.stats.bestScore = finalScore;
+                player.stats.bestScoreDate = new Date().toISOString();
+            }
+        }
+    });
+
+    await savePlayers(data);
+    return true;
+}
+
 module.exports = {
     getPlayers,
     playerExists,
     checkPlayers,
     addPlayer,
     addPlayers,
-    getAllPlayerNames
+    getAllPlayerNames,
+    updatePlayerStats,
+    updateMultiplePlayersStats
 };

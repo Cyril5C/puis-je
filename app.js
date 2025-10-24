@@ -3,7 +3,9 @@
 // État de l'application
 const App = {
     players: [],
-    currentScreen: 'home-screen',
+    selectedPlayers: [], // Joueurs sélectionnés pour la partie
+    allPlayers: [], // Tous les joueurs disponibles
+    currentScreen: 'player-selection-screen',
     currentRound: 1,
     gameStartTime: null,
 

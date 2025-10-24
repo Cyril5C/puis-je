@@ -41,20 +41,36 @@
                 </form>
             </div>
 
-            <!-- Écran d'accueil - Saisie des pseudos -->
-            <div id="home-screen" class="screen hidden">
-                <h2>Pseudos des joueurs</h2>
-                <form id="player-names-form">
-                    <div id="player-inputs"></div>
-                    <div class="form-actions">
-                        <button type="button" id="add-player-btn" class="btn btn-secondary btn-small">Ajouter un joueur</button>
-                        <button type="submit" class="btn btn-primary">Lancer la partie</button>
-                        <div class="bottom-links">
-                            <button type="button" id="rules-btn" class="btn btn-secondary btn-small">Règles du jeu</button>
-                            <button type="button" id="settings-btn" class="btn btn-secondary btn-small">Paramètres</button>
-                        </div>
+            <!-- Écran de sélection des joueurs -->
+            <div id="player-selection-screen" class="screen hidden">
+                <h2>Sélectionne les joueurs (3-5)</h2>
+                <p class="selection-subtitle" id="selection-count">0 joueur sélectionné</p>
+                <div id="players-list" class="players-list">
+                    <p class="loading-message">Chargement des joueurs...</p>
+                </div>
+                <div class="selection-actions">
+                    <button type="button" id="add-new-player-btn" class="btn btn-secondary">+ Ajouter un nouveau joueur</button>
+                    <button type="button" id="start-game-btn" class="btn btn-primary" disabled>Lancer la partie</button>
+                    <div class="bottom-links">
+                        <button type="button" id="rules-btn" class="btn btn-secondary btn-small">Règles du jeu</button>
+                        <button type="button" id="settings-btn" class="btn btn-secondary btn-small">Paramètres</button>
                     </div>
-                </form>
+                </div>
+            </div>
+
+            <!-- Modal ajout nouveau joueur -->
+            <div id="add-player-modal" class="modal hidden">
+                <div class="modal-content">
+                    <span class="modal-close" id="close-add-player-modal">&times;</span>
+                    <h2>Nouveau joueur</h2>
+                    <form id="new-player-form">
+                        <div class="player-input-group">
+                            <label for="new-player-name">Pseudo</label>
+                            <input type="text" id="new-player-name" placeholder="Entre ton pseudo" required maxLength="20">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                    </form>
+                </div>
             </div>
 
             <!-- Écran des règles -->

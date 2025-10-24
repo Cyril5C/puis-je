@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const { addGame, getStats } = require('./gist');
-const { checkPlayers, addPlayers, getAllPlayerNames } = require('./players');
+const { checkPlayers, addPlayers, getAllPlayerNames, getPlayers, updateMultiplePlayersStats } = require('./players');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -75,14 +75,26 @@ app.post('/api/players/register', async (req, res) => {
     }
 });
 
-// Obtenir tous les pseudos
+// Obtenir tous les joueurs avec leurs stats
 app.get('/api/players', async (req, res) => {
     try {
-        const names = await getAllPlayerNames();
-        res.json({ players: names });
+        const data = await getPlayers();
+        res.json(data);
     } catch (error) {
         console.error('Error getting players:', error);
         res.status(500).json({ error: error.message });
+    }
+});
+
+// Mettre à jour les stats des joueurs après une partie
+app.post('/api/players/update-stats', async (req, res) => {
+    try {
+        const { players } = req.body; // Format: [{ name, won, finalScore }, ...]
+        const success = await updateMultiplePlayersStats(players);
+        res.json({ success });
+    } catch (error) {
+        console.error('Error updating players stats:', error);
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
