@@ -1,8 +1,12 @@
 const express = require('express');
 const path = require('path');
+const { addGame, getStats } = require('./gist');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Middleware pour parser le JSON
+app.use(express.json());
 
 // Servir les fichiers statiques
 app.use(express.static(path.join(__dirname)));
@@ -16,6 +20,35 @@ app.use((req, res, next) => {
     next();
 });
 
+// API Routes
+// Sauvegarder une partie complète
+app.post('/api/games', async (req, res) => {
+    try {
+        const gameData = req.body;
+        const savedGame = await addGame(gameData);
+
+        if (savedGame) {
+            res.json({ success: true, game: savedGame });
+        } else {
+            res.status(500).json({ success: false, error: 'Failed to save game' });
+        }
+    } catch (error) {
+        console.error('Error saving game:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// Récupérer les statistiques
+app.get('/api/stats', async (req, res) => {
+    try {
+        const stats = await getStats();
+        res.json(stats);
+    } catch (error) {
+        console.error('Error getting stats:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Route principale
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -23,7 +56,9 @@ app.get('/', (req, res) => {
 
 // Fallback pour toutes les routes vers index.html (SPA)
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    if (!req.url.startsWith('/api')) {
+        res.sendFile(path.join(__dirname, 'index.html'));
+    }
 });
 
 // Démarrer le serveur

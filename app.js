@@ -444,6 +444,9 @@ const App = {
         });
 
         this.showScreen('final-score-screen');
+
+        // Sauvegarder la partie sur le serveur
+        this.saveGameToServer();
     },
 
     // Afficher les détails des manches d'un joueur
@@ -539,6 +542,64 @@ const App = {
         } catch (error) {
             console.error('Erreur lors du chargement des règles:', error);
             alert('Impossible de charger les règles du jeu.');
+        }
+    },
+
+    // Sauvegarder la partie sur le serveur (GitHub Gist)
+    async saveGameToServer() {
+        try {
+            const sortedPlayers = [...this.players].sort((a, b) => a.score - b.score);
+            const winner = sortedPlayers[0];
+
+            const gameData = {
+                playerCount: this.players.length,
+                players: this.players.map(p => ({
+                    name: p.name,
+                    finalScore: p.score,
+                    isWinner: p.id === winner.id
+                })),
+                winner: winner.name,
+                winnerScore: winner.score,
+                rounds: []
+            };
+
+            // Construire les données des manches
+            const roundCount = this.players[0].roundScores?.length || 0;
+            for (let i = 0; i < roundCount; i++) {
+                const roundData = {
+                    number: i + 1,
+                    mission: this.missions[i + 1],
+                    scores: []
+                };
+
+                this.players.forEach(player => {
+                    if (player.roundScores && player.roundScores[i]) {
+                        roundData.scores.push({
+                            playerName: player.name,
+                            score: player.roundScores[i].score
+                        });
+                    }
+                });
+
+                gameData.rounds.push(roundData);
+            }
+
+            // Envoyer au serveur
+            const response = await fetch('/api/games', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(gameData)
+            });
+
+            if (response.ok) {
+                console.log('✅ Partie sauvegardée sur le serveur');
+            } else {
+                console.warn('⚠️ Échec de la sauvegarde de la partie');
+            }
+        } catch (error) {
+            console.error('❌ Erreur lors de la sauvegarde:', error);
         }
     },
 
