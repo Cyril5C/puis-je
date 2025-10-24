@@ -988,11 +988,6 @@ document.addEventListener('DOMContentLoaded', () => {
         App.showBestScores();
     });
 
-    // Bouton "Retour" depuis les meilleurs scores
-    document.getElementById('back-from-best-scores-btn').addEventListener('click', () => {
-        App.showScreen('player-selection-screen');
-    });
-
     // Bouton "Partager les scores"
     document.getElementById('share-scores-btn').addEventListener('click', () => {
         App.shareScores();
@@ -1010,13 +1005,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Bouton "Retour" des règles
-    document.getElementById('back-from-rules-btn').addEventListener('click', () => {
+    // Boutons X pour fermer les écrans du menu
+    document.getElementById('close-rules-btn').addEventListener('click', () => {
         App.showScreen('player-selection-screen');
     });
 
-    // Bouton "Retour" des paramètres
-    document.getElementById('back-to-home-btn').addEventListener('click', () => {
+    document.getElementById('close-best-scores-btn').addEventListener('click', () => {
+        App.showScreen('player-selection-screen');
+    });
+
+    document.getElementById('close-settings-btn').addEventListener('click', () => {
         App.showScreen('player-selection-screen');
     });
 
