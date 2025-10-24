@@ -807,6 +807,97 @@ h2 {
     line-height: 1.5;
 }
 
+.install-steps {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+    color: #333;
+}
+
+body.dark-mode .install-steps {
+    color: #e0e0e0;
+}
+
+.install-steps li {
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+}
+
+.install-steps strong {
+    color: #667eea;
+}
+
+body.dark-mode .install-steps strong {
+    color: #8b9dc3;
+}
+
+.share-icon {
+    display: inline-block;
+    font-size: 1.2rem;
+    vertical-align: middle;
+}
+
+.settings-tip {
+    color: #667eea;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+body.dark-mode .settings-tip {
+    color: #8b9dc3;
+}
+
+/* Login screen */
+.login-content {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.login-description {
+    color: #666;
+    font-size: 0.95rem;
+    text-align: center;
+    line-height: 1.5;
+}
+
+body.dark-mode .login-description {
+    color: #a0aec0;
+}
+
+#password-input {
+    padding: 1rem;
+    font-size: 1.1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+    text-align: center;
+}
+
+#password-input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+body.dark-mode #password-input {
+    background: #2d3748;
+    color: #e0e0e0;
+    border-color: #4a5568;
+}
+
+body.dark-mode #password-input:focus {
+    border-color: #8b9dc3;
+}
+
+.login-error {
+    color: #e53e3e;
+    font-size: 0.9rem;
+    text-align: center;
+    font-weight: 500;
+}
+
 /* Toggle switch */
 .toggle-container {
     display: flex;

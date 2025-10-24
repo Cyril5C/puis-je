@@ -28,8 +28,21 @@
             <h1>Puis-je</h1>
         </header>
         <main>
+            <!-- Écran de connexion -->
+            <div id="login-screen" class="screen">
+                <h2>🔒 Connexion</h2>
+                <form id="login-form">
+                    <div class="login-content">
+                        <p class="login-description">Veuillez entrer le mot de passe pour accéder à l'application</p>
+                        <input type="password" id="password-input" placeholder="Mot de passe" required autofocus>
+                        <p id="login-error" class="login-error hidden">Mot de passe incorrect</p>
+                        <button type="submit" class="btn btn-primary">Se connecter</button>
+                    </div>
+                </form>
+            </div>
+
             <!-- Écran d'accueil - Saisie des pseudos -->
-            <div id="home-screen" class="screen">
+            <div id="home-screen" class="screen hidden">
                 <h2>Pseudos des joueurs</h2>
                 <form id="player-names-form">
                     <div id="player-inputs"></div>
@@ -66,6 +79,16 @@
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
+                    </div>
+                    <div class="settings-section">
+                        <h3>Installation</h3>
+                        <p class="settings-description">📱 Pour ajouter l'app sur votre page d'accueil iPhone :</p>
+                        <ol class="install-steps">
+                            <li>Appuyez sur le bouton <strong>Partager</strong> <span class="share-icon">⎋</span> (en bas de Safari)</li>
+                            <li>Faites défiler et appuyez sur <strong>"Sur l'écran d'accueil"</strong></li>
+                            <li>Appuyez sur <strong>"Ajouter"</strong></li>
+                        </ol>
+                        <p class="settings-tip">💡 L'icône Puis-je apparaîtra sur votre écran d'accueil</p>
                     </div>
                     <div class="settings-section">
                         <h3>Stockage local</h3>

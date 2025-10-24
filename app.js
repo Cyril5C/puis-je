@@ -641,6 +641,9 @@ const App = {
     }
 };
 
+// Mot de passe pour accéder à l'application (modifiable ici)
+const APP_PASSWORD = 'puisje2025';
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Application Puis-je initialisée');
 
@@ -648,7 +651,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const darkMode = localStorage.getItem('darkMode') === 'true';
     if (darkMode) {
         document.body.classList.add('dark-mode');
-        document.getElementById('dark-mode-toggle').checked = true;
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        if (darkModeToggle) darkModeToggle.checked = true;
+    }
+
+    // Vérifier si l'utilisateur est connecté
+    const isAuthenticated = sessionStorage.getItem('authenticated') === 'true';
+    if (!isAuthenticated) {
+        // Afficher l'écran de connexion
+        App.showScreen('login-screen');
+        return;
     }
 
     // Afficher le bouton partage uniquement si la Web Share API est disponible (mobile)
@@ -669,6 +681,35 @@ document.addEventListener('DOMContentLoaded', () => {
         App.showScreen('home-screen');
         App.createPlayerInputs(3);
     }
+
+    // Formulaire de connexion
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const passwordInput = document.getElementById('password-input');
+        const loginError = document.getElementById('login-error');
+
+        if (passwordInput.value === APP_PASSWORD) {
+            // Authentification réussie
+            sessionStorage.setItem('authenticated', 'true');
+            loginError.classList.add('hidden');
+            passwordInput.value = '';
+
+            // Vérifier s'il y a une partie en cours
+            const gameState = Storage.getGameState();
+            if (gameState && gameState.inProgress) {
+                App.restoreGame(gameState);
+            } else {
+                // Afficher l'écran d'accueil avec 3 joueurs par défaut
+                App.showScreen('home-screen');
+                App.createPlayerInputs(3);
+            }
+        } else {
+            // Mot de passe incorrect
+            loginError.classList.remove('hidden');
+            passwordInput.value = '';
+            passwordInput.focus();
+        }
+    });
 
     // Formulaire de saisie des pseudos
     document.getElementById('player-names-form').addEventListener('submit', (e) => {
