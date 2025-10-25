@@ -1022,11 +1022,6 @@ document.addEventListener('DOMContentLoaded', () => {
         App.endGame();
     });
 
-    // Bouton "Meilleurs scores" depuis la page finale
-    document.getElementById('view-best-scores-btn').addEventListener('click', () => {
-        App.showBestScores();
-    });
-
     // Bouton "Partager les scores"
     document.getElementById('share-scores-btn').addEventListener('click', () => {
         App.shareScores();
