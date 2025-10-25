@@ -1052,8 +1052,8 @@ document.addEventListener('DOMContentLoaded', () => {
         App.shareScores();
     });
 
-    // Fermer la modal
-    document.querySelector('.modal-close').addEventListener('click', () => {
+    // Fermer la modal avec le bouton X
+    document.getElementById('close-modal-btn').addEventListener('click', () => {
         App.closeModal();
     });
 
