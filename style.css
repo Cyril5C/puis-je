@@ -1516,3 +1516,23 @@ body.dark-mode .menu-item:hover {
     display: block;
 }
 
+/* Message d'information anti-triche */
+.info-message {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.info-message p {
+    margin: 0.5rem 0;
+}
+
+body.dark-mode .info-message {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 1px solid #667eea;
+}
+

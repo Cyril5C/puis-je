@@ -117,19 +117,25 @@ async function addGame(gameData) {
         ...gameData
     };
 
-    data.games.push(game);
+    // Ne sauvegarder dans les meilleurs scores que si savedToLeaderboard est true
+    if (gameData.savedToLeaderboard !== false) {
+        data.games.push(game);
 
-    // Mettre à jour les stats globales
-    if (!data.stats) {
-        data.stats = {};
+        // Mettre à jour les stats globales
+        if (!data.stats) {
+            data.stats = {};
+        }
+        data.stats.totalGames = data.games.length;
+        data.stats.lastUpdate = new Date().toISOString();
+
+        // Sauvegarder
+        const success = await saveGistData(data);
+
+        return success ? game : null;
+    } else {
+        console.log('⏱️ Partie non sauvegardée (durée < 15min)');
+        return game; // Retourner quand même le jeu sans le sauvegarder
     }
-    data.stats.totalGames = data.games.length;
-    data.stats.lastUpdate = new Date().toISOString();
-
-    // Sauvegarder
-    const success = await saveGistData(data);
-
-    return success ? game : null;
 }
 
 /**

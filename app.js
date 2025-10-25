@@ -479,6 +479,29 @@ const App = {
 
     // Sauvegarder la partie sur le serveur (GitHub Gist)
     async saveGameToServer() {
+        // Vérifier la durée de la partie (anti-triche)
+        const MIN_GAME_DURATION = 15 * 60 * 1000; // 15 minutes en millisecondes
+        const gameDuration = Date.now() - this.gameStartTime;
+        const isTooFast = gameDuration < MIN_GAME_DURATION && !this.testMode;
+
+        if (isTooFast) {
+            const minutes = Math.floor(gameDuration / 60000);
+            const seconds = Math.floor((gameDuration % 60000) / 1000);
+            console.log(`⏱️ Partie trop rapide (${minutes}min ${seconds}s) - Non sauvegardée dans les meilleurs scores`);
+
+            // Afficher un message à l'utilisateur
+            const infoMessage = document.createElement('div');
+            infoMessage.className = 'info-message';
+            infoMessage.innerHTML = `
+                <p>ℹ️ Cette partie n'a pas été enregistrée dans les meilleurs scores</p>
+                <p style="font-size: 0.9em; opacity: 0.8;">Durée minimale requise : 15 minutes</p>
+            `;
+            document.getElementById('final-scoreboard').insertBefore(
+                infoMessage,
+                document.getElementById('final-scoreboard').firstChild
+            );
+        }
+
         try {
             const sortedPlayers = [...this.players].sort((a, b) => a.score - b.score);
             const winner = sortedPlayers[0];
@@ -492,7 +515,9 @@ const App = {
                 })),
                 winner: winner.name,
                 winnerScore: winner.score,
-                rounds: []
+                rounds: [],
+                duration: gameDuration,
+                savedToLeaderboard: !isTooFast
             };
 
             // Construire les données des manches
