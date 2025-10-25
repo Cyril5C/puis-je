@@ -33,6 +33,9 @@ const App = {
         this.currentRound = gameState.round || 1;
         console.log('Partie restaurée:', gameState);
 
+        // Masquer le header (mode jeu)
+        document.body.classList.add('in-game');
+
         // Afficher directement l'écran de la manche en cours
         if (gameState.roundStarted) {
             this.startRound();
@@ -68,6 +71,9 @@ const App = {
         });
 
         console.log('Partie commencée avec les joueurs:', this.players);
+
+        // Masquer le header (mode jeu)
+        document.body.classList.add('in-game');
 
         // Lancer directement la première manche
         this.startRound();
@@ -445,6 +451,9 @@ const App = {
             }
 
             console.log('Partie arrêtée - Retour à la sélection des joueurs');
+
+            // Réafficher le header
+            document.body.classList.remove('in-game');
 
             // Retour à l'écran de sélection des joueurs
             this.showScreen('player-selection-screen');

@@ -122,6 +122,12 @@ header {
     padding: 1rem 1.5rem;
     border-bottom: 2px solid #f0f0f0;
     position: relative;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Masquer le header pendant le jeu */
+body.in-game header {
+    display: none;
 }
 
 h1 {
