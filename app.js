@@ -837,6 +837,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Titre cliquable pour retour à l'accueil
+    document.getElementById('app-title').addEventListener('click', () => {
+        App.showScreen('player-selection-screen');
+        App.closeHamburgerMenu();
+    });
+
     // Menu hamburger
     document.getElementById('hamburger-menu-btn').addEventListener('click', () => {
         App.toggleHamburgerMenu();
@@ -1003,19 +1009,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.id === 'round-details-modal') {
             App.closeModal();
         }
-    });
-
-    // Boutons X pour fermer les écrans du menu
-    document.getElementById('close-rules-btn').addEventListener('click', () => {
-        App.showScreen('player-selection-screen');
-    });
-
-    document.getElementById('close-best-scores-btn').addEventListener('click', () => {
-        App.showScreen('player-selection-screen');
-    });
-
-    document.getElementById('close-settings-btn').addEventListener('click', () => {
-        App.showScreen('player-selection-screen');
     });
 
     // Toggle mode sombre
