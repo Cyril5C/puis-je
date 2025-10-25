@@ -5,6 +5,7 @@ const { checkPlayers, addPlayers, getAllPlayerNames, getPlayers, updateMultipleP
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const TEST_MODE = process.env.TEST_MODE === 'true';
 
 // Middleware pour parser le JSON
 app.use(express.json());
@@ -49,6 +50,14 @@ app.get('/api/stats', async (req, res) => {
         console.error('Error getting stats:', error);
         res.status(500).json({ error: error.message });
     }
+});
+
+// Récupérer la configuration (mode test, etc.)
+app.get('/api/config', (_req, res) => {
+    res.json({
+        testMode: TEST_MODE,
+        maxRounds: TEST_MODE ? 1 : 5
+    });
 });
 
 // Vérifier si des pseudos existent déjà

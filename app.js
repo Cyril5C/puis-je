@@ -8,6 +8,8 @@ const App = {
     currentScreen: 'player-selection-screen',
     currentRound: 1,
     gameStartTime: null,
+    maxRounds: 5, // Sera mis à jour depuis le serveur
+    testMode: false,
 
     // Missions par manche
     missions: {
@@ -247,8 +249,8 @@ const App = {
 
         console.log('Scores mis à jour:', this.players);
 
-        // Vérifier si c'est la fin du jeu (après la manche 5)
-        if (this.currentRound > 5) {
+        // Vérifier si c'est la fin du jeu (après la dernière manche)
+        if (this.currentRound > this.maxRounds) {
             this.showFinalScore();
         } else {
             this.showScoreboard();
@@ -592,6 +594,25 @@ const App = {
         }
     },
 
+    // Charger la configuration depuis le serveur
+    async loadConfig() {
+        try {
+            const response = await fetch('/api/config');
+            const config = await response.json();
+            this.maxRounds = config.maxRounds;
+            this.testMode = config.testMode;
+
+            if (this.testMode) {
+                console.log('🧪 MODE TEST activé - 1 manche seulement');
+            }
+        } catch (error) {
+            console.error('Erreur chargement config:', error);
+            // Valeurs par défaut
+            this.maxRounds = 5;
+            this.testMode = false;
+        }
+    },
+
     // Charger et afficher tous les joueurs pour la sélection
     async loadPlayers() {
         const container = document.getElementById('players-list');
@@ -890,17 +911,20 @@ document.addEventListener('DOMContentLoaded', () => {
             loginError.classList.add('hidden');
             passwordInput.value = '';
 
-            // Charger les joueurs
-            App.loadPlayers();
+            // Charger la configuration et les joueurs
+            (async () => {
+                await App.loadConfig();
+                await App.loadPlayers();
 
-            // Vérifier s'il y a une partie en cours
-            const gameState = Storage.getGameState();
-            if (gameState && gameState.inProgress) {
-                App.restoreGame(gameState);
-            } else {
-                // Afficher l'écran de sélection des joueurs
-                App.showScreen('player-selection-screen');
-            }
+                // Vérifier s'il y a une partie en cours
+                const gameState = Storage.getGameState();
+                if (gameState && gameState.inProgress) {
+                    App.restoreGame(gameState);
+                } else {
+                    // Afficher l'écran de sélection des joueurs
+                    App.showScreen('player-selection-screen');
+                }
+            })();
         } else {
             // Mot de passe incorrect
             loginError.classList.remove('hidden');
@@ -1047,17 +1071,20 @@ document.addEventListener('DOMContentLoaded', () => {
         // Afficher l'écran de connexion
         App.showScreen('login-screen');
     } else {
-        // Charger les joueurs au démarrage
-        App.loadPlayers();
+        // Charger la configuration et les joueurs au démarrage
+        (async () => {
+            await App.loadConfig();
+            await App.loadPlayers();
 
-        // Vérifier s'il y a une partie en cours
-        const gameState = Storage.getGameState();
-        if (gameState && gameState.inProgress) {
-            console.log('Partie en cours détectée, restauration...');
-            App.restoreGame(gameState);
-        } else {
-            // Afficher l'écran de sélection des joueurs
-            App.showScreen('player-selection-screen');
-        }
+            // Vérifier s'il y a une partie en cours
+            const gameState = Storage.getGameState();
+            if (gameState && gameState.inProgress) {
+                console.log('Partie en cours détectée, restauration...');
+                App.restoreGame(gameState);
+            } else {
+                // Afficher l'écran de sélection des joueurs
+                App.showScreen('player-selection-screen');
+            }
+        })();
     }
 });
