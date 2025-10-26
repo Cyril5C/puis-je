@@ -1036,8 +1036,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Fermer le modal et recharger la liste
             document.getElementById('add-player-modal').classList.add('hidden');
             await App.loadPlayers();
-
-            alert(`✅ Joueur "${name}" ajouté avec succès !`);
         } catch (error) {
             console.error('Erreur:', error);
             alert('❌ Erreur lors de l\'ajout du joueur');
