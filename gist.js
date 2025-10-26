@@ -77,6 +77,7 @@ async function saveGistData(data) {
     }
 
     try {
+        console.log('📤 Tentative de sauvegarde dans le Gist:', GIST_ID);
         const response = await fetch(GIST_API_URL, {
             method: 'PATCH',
             headers: {
@@ -94,13 +95,18 @@ async function saveGistData(data) {
         });
 
         if (!response.ok) {
-            throw new Error(`GitHub API error: ${response.status}`);
+            const errorBody = await response.text();
+            console.error(`❌ GitHub API error: ${response.status} - ${errorBody}`);
+            throw new Error(`GitHub API error: ${response.status} - ${errorBody}`);
         }
 
+        console.log('✅ Partie sauvegardée avec succès dans le Gist');
         return true;
     } catch (error) {
-        console.error('Error saving to gist:', error);
-        return false;
+        console.error('❌ Error saving to gist:', error.message);
+        // Fallback sur le fichier local en cas d'erreur
+        console.warn('⚠️ Fallback: sauvegarde dans le fichier local');
+        return await saveLocalData(data);
     }
 }
 

@@ -66,6 +66,7 @@ async function getGistPlayers() {
  */
 async function saveGistPlayers(data) {
     try {
+        console.log('📤 Tentative de sauvegarde des joueurs dans le Gist:', GIST_API_URL);
         const response = await fetch(GIST_API_URL, {
             method: 'PATCH',
             headers: {
@@ -83,13 +84,18 @@ async function saveGistPlayers(data) {
         });
 
         if (!response.ok) {
-            throw new Error(`GitHub API error: ${response.status}`);
+            const errorBody = await response.text();
+            console.error(`❌ GitHub API error (players): ${response.status} - ${errorBody}`);
+            throw new Error(`GitHub API error: ${response.status} - ${errorBody}`);
         }
 
+        console.log('✅ Joueurs sauvegardés avec succès dans le Gist');
         return true;
     } catch (error) {
-        console.error('Error saving to players gist:', error);
-        return false;
+        console.error('❌ Error saving to players gist:', error.message);
+        // Fallback sur le fichier local
+        console.warn('⚠️ Fallback: sauvegarde des joueurs dans le fichier local');
+        return await saveLocalPlayers(data);
     }
 }
 
