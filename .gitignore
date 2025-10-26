@@ -30,3 +30,6 @@ build/
 # Local development data
 games-local.json
 players.json
+players-local.json
+reset-json.txt
+TODO.md

@@ -34,6 +34,7 @@ const App = {
         this.players = gameState.players;
         this.currentRound = gameState.round || 1;
         console.log('Partie restaurée:', gameState);
+        console.log(`⚙️ Configuration: maxRounds=${this.maxRounds}, testMode=${this.testMode}`);
 
         // Masquer le header (mode jeu)
         document.body.classList.add('in-game');
@@ -144,12 +145,19 @@ const App = {
             input.type = 'number';
             input.inputMode = 'numeric';
             input.min = '1';
-            input.max = '50';
+            input.max = '200';
             input.value = '';
             input.placeholder = '-';
             input.required = true;
             input.id = `cards-${player.id}`;
-            input.oninput = () => this.updatePlayerTotal(player.id);
+            input.oninput = () => {
+                // Limiter la valeur à 200 maximum
+                if (parseInt(input.value) > 200) {
+                    alert('Le nombre de points ne peut être supérieur à 200');
+                    input.value = '';
+                }
+                this.updatePlayerTotal(player.id);
+            };
 
             const total = document.createElement('div');
             total.className = 'player-total';
@@ -206,7 +214,7 @@ const App = {
             const cardCount = parseInt(input.value);
 
             if (!input.value || cardCount <= 0) {
-                alert(`Veuillez entrer un nombre de cartes valide (minimum 1) pour ${player.name}`);
+                alert(`Veuillez entrer un nombre de points valide (minimum 1, maximum 200) pour ${player.name}`);
                 return;
             }
         }
@@ -250,9 +258,12 @@ const App = {
         console.log('Scores mis à jour:', this.players);
 
         // Vérifier si c'est la fin du jeu (après la dernière manche)
+        console.log(`🎮 Vérification fin de jeu: currentRound=${this.currentRound}, maxRounds=${this.maxRounds}`);
         if (this.currentRound > this.maxRounds) {
+            console.log('✅ Fin du jeu !');
             this.showFinalScore();
         } else {
+            console.log(`➡️ Passage à la manche ${this.currentRound}`);
             this.showScoreboard();
         }
     },
@@ -433,34 +444,39 @@ const App = {
         document.getElementById('round-details-modal').classList.add('hidden');
     },
 
-    // Arrêter la partie
+    // Arrêter la partie (avec confirmation)
     endGame() {
         if (confirm('Êtes-vous sûr de vouloir arrêter la partie ? Les scores seront perdus.')) {
-            // Sauvegarder les noms des joueurs avant de tout effacer
-            const lastPlayers = Storage.getLastPlayers();
-
-            // Réinitialiser l'état
-            this.players = [];
-            this.currentRound = 1;
-
-            // Effacer les scores et l'état du jeu, mais pas les derniers joueurs
-            Storage.clearGameState();
-            Storage.saveScores({});
-
-            // Restaurer les derniers joueurs
-            if (lastPlayers) {
-                Storage.saveLastPlayers(lastPlayers);
-            }
-
-            console.log('Partie arrêtée - Retour à la sélection des joueurs');
-
-            // Réafficher le header
-            document.body.classList.remove('in-game');
-
-            // Retour à l'écran de sélection des joueurs
-            this.showScreen('player-selection-screen');
-            this.loadPlayers();
+            this.startNewGame();
         }
+    },
+
+    // Démarrer une nouvelle partie (sans confirmation)
+    startNewGame() {
+        // Sauvegarder les noms des joueurs avant de tout effacer
+        const lastPlayers = Storage.getLastPlayers();
+
+        // Réinitialiser l'état
+        this.players = [];
+        this.currentRound = 1;
+
+        // Effacer les scores et l'état du jeu, mais pas les derniers joueurs
+        Storage.clearGameState();
+        Storage.saveScores({});
+
+        // Restaurer les derniers joueurs
+        if (lastPlayers) {
+            Storage.saveLastPlayers(lastPlayers);
+        }
+
+        console.log('Nouvelle partie - Retour à la sélection des joueurs');
+
+        // Réafficher le header
+        document.body.classList.remove('in-game');
+
+        // Retour à l'écran de sélection des joueurs
+        this.showScreen('player-selection-screen');
+        this.loadPlayers();
     },
 
     // Charger et afficher les règles
@@ -1057,7 +1073,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Bouton "Nouvelle partie"
     document.getElementById('new-game-btn').addEventListener('click', () => {
-        App.endGame();
+        App.startNewGame();
     });
 
     // Bouton "Partager les scores"
