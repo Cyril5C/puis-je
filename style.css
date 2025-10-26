@@ -702,15 +702,20 @@ body.dark-mode .game-duration {
     box-shadow: 0 8px 24px rgba(255, 215, 0, 0.4);
 }
 
-#final-score-screen .player-name {
+#final-score-screen .scoreboard-row .player-name {
     cursor: pointer;
     text-decoration: underline;
     text-decoration-style: dotted;
     text-underline-offset: 3px;
 }
 
-#final-score-screen .player-name:hover {
+#final-score-screen .scoreboard-row .player-name:hover {
     color: #667eea;
+}
+
+#final-score-screen .best-score-card .player-name {
+    cursor: default;
+    text-decoration: none;
 }
 
 /* Modal */
