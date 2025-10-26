@@ -33,14 +33,19 @@ const App = {
     restoreGame(gameState) {
         this.players = gameState.players;
         this.currentRound = gameState.round || 1;
+        this.gameStartTime = gameState.gameStartTime || Date.now();
         console.log('Partie restaurée:', gameState);
         console.log(`⚙️ Configuration: maxRounds=${this.maxRounds}, testMode=${this.testMode}`);
 
         // Masquer le header (mode jeu)
         document.body.classList.add('in-game');
 
-        // Afficher directement l'écran de la manche en cours
-        if (gameState.roundStarted) {
+        // Vérifier si la partie est terminée
+        if (this.currentRound > this.maxRounds) {
+            console.log('✅ Partie terminée, affichage des scores finaux');
+            this.showFinalScore();
+        } else if (gameState.roundStarted) {
+            // Afficher l'écran de la manche en cours
             this.startRound();
         } else {
             // Sinon afficher le tableau des scores
@@ -70,6 +75,7 @@ const App = {
         Storage.saveGameState({
             players: this.players,
             round: 1,
+            gameStartTime: this.gameStartTime,
             inProgress: true
         });
 
@@ -95,6 +101,7 @@ const App = {
             players: this.players,
             round: this.currentRound,
             mission: mission,
+            gameStartTime: this.gameStartTime,
             inProgress: true,
             roundStarted: true
         });
@@ -251,6 +258,7 @@ const App = {
         Storage.saveGameState({
             players: this.players,
             round: this.currentRound,
+            gameStartTime: this.gameStartTime,
             inProgress: true,
             roundStarted: false
         });
