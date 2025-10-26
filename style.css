@@ -1143,6 +1143,25 @@ body.dark-mode .toggle-switch input:checked + .toggle-slider {
     max-width: 600px;
 }
 
+.best-scores-separator {
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.best-scores-separator h3 {
+    font-size: 1.8rem;
+    color: #667eea;
+    margin: 0;
+    padding: 1rem 0;
+    border-bottom: 2px solid #667eea;
+}
+
+body.dark-mode .best-scores-separator h3 {
+    color: #9f7aea;
+    border-bottom-color: #9f7aea;
+}
+
 .best-scores-podium {
     display: flex;
     flex-direction: column;

@@ -383,10 +383,67 @@ const App = {
             container.appendChild(row);
         });
 
+        // Ajouter les meilleurs scores à la suite
+        await this.addBestScoresToFinalScreen(container);
+
         this.showScreen('final-score-screen');
 
         // Sauvegarder la partie sur le serveur
         await this.saveGameToServer();
+    },
+
+    // Ajouter les meilleurs scores sur l'écran final
+    async addBestScoresToFinalScreen(container) {
+        try {
+            const response = await fetch('/api/stats');
+            if (!response.ok) return;
+
+            const stats = await response.json();
+
+            if (stats.bestScores && stats.bestScores.length > 0) {
+                // Séparateur
+                const separator = document.createElement('div');
+                separator.className = 'best-scores-separator';
+                separator.innerHTML = '<h3>🏆 Meilleurs scores</h3>';
+                container.appendChild(separator);
+
+                // Podium des meilleurs scores
+                const podium = document.createElement('div');
+                podium.className = 'best-scores-podium';
+
+                stats.bestScores.slice(0, 3).forEach((scoreEntry, index) => {
+                    const scoreCard = document.createElement('div');
+                    scoreCard.className = 'best-score-card';
+
+                    if (index === 0) scoreCard.classList.add('gold');
+                    else if (index === 1) scoreCard.classList.add('silver');
+                    else if (index === 2) scoreCard.classList.add('bronze');
+
+                    const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+                    const date = new Date(scoreEntry.date).toLocaleDateString('fr-FR', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                    });
+
+                    scoreCard.innerHTML = `
+                        <div class="medal">${medal}</div>
+                        <div class="rank">#${index + 1}</div>
+                        <div class="player-info">
+                            <div class="player-name">${scoreEntry.player}</div>
+                            <div class="score">${scoreEntry.score} points</div>
+                            <div class="date">${date}</div>
+                        </div>
+                    `;
+
+                    podium.appendChild(scoreCard);
+                });
+
+                container.appendChild(podium);
+            }
+        } catch (error) {
+            console.log('Could not load best scores:', error);
+        }
     },
 
     // Afficher les détails des manches d'un joueur
