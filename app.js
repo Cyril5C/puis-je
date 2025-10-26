@@ -357,6 +357,20 @@ const App = {
             timeInfo.className = 'game-duration';
             timeInfo.textContent = `⏱️ Durée de la partie : ${minutes}min ${seconds}s`;
             container.appendChild(timeInfo);
+
+            // Vérifier si la partie est trop rapide (< 15 minutes)
+            const MIN_GAME_DURATION = 15 * 60 * 1000; // 15 minutes
+            const isTooFast = gameDuration < MIN_GAME_DURATION && !this.testMode;
+
+            if (isTooFast) {
+                const infoMessage = document.createElement('div');
+                infoMessage.className = 'info-message';
+                infoMessage.innerHTML = `
+                    <p>ℹ️ Cette partie n'a pas été enregistrée dans les meilleurs scores</p>
+                    <p style="font-size: 0.9em; opacity: 0.8;">Durée minimale requise : 15 minutes</p>
+                `;
+                container.appendChild(infoMessage);
+            }
         }
 
         sortedPlayers.forEach((player, index) => {
@@ -566,18 +580,6 @@ const App = {
             const minutes = Math.floor(gameDuration / 60000);
             const seconds = Math.floor((gameDuration % 60000) / 1000);
             console.log(`⏱️ Partie trop rapide (${minutes}min ${seconds}s) - Non sauvegardée dans les meilleurs scores`);
-
-            // Afficher un message à l'utilisateur
-            const infoMessage = document.createElement('div');
-            infoMessage.className = 'info-message';
-            infoMessage.innerHTML = `
-                <p>ℹ️ Cette partie n'a pas été enregistrée dans les meilleurs scores</p>
-                <p style="font-size: 0.9em; opacity: 0.8;">Durée minimale requise : 15 minutes</p>
-            `;
-            document.getElementById('final-scoreboard').insertBefore(
-                infoMessage,
-                document.getElementById('final-scoreboard').firstChild
-            );
         }
 
         try {
