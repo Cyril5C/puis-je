@@ -270,6 +270,11 @@ const App = {
 
     // Afficher le tableau des scores
     showScoreboard() {
+        // Afficher le numéro de la manche
+        const roundInfo = document.getElementById('scoreboard-round-info');
+        const previousRound = this.currentRound - 1;
+        roundInfo.textContent = `Après la manche ${previousRound}`;
+
         const container = document.getElementById('scoreboard-table');
         container.innerHTML = '';
 
