@@ -6,6 +6,7 @@ const { checkPlayers, addPlayers, getAllPlayerNames, getPlayers, updateMultipleP
 const app = express();
 const PORT = process.env.PORT || 3000;
 const TEST_MODE = process.env.TEST_MODE === 'true';
+const TEST_ROUNDS = parseInt(process.env.TEST_ROUNDS) || 2;
 const APP_PASSWORD = process.env.APP_PASSWORD || 'lesplantes';
 
 // Middleware pour parser le JSON
@@ -57,7 +58,7 @@ app.get('/api/stats', async (req, res) => {
 app.get('/api/config', (_req, res) => {
     res.json({
         testMode: TEST_MODE,
-        maxRounds: TEST_MODE ? 1 : 5,
+        maxRounds: TEST_MODE ? TEST_ROUNDS : 5,
         appPassword: APP_PASSWORD
     });
 });
@@ -125,4 +126,7 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
     console.log(`✅ Serveur démarré sur le port ${PORT}`);
     console.log(`🌐 Application accessible sur http://localhost:${PORT}`);
+    if (TEST_MODE) {
+        console.log(`🧪 MODE TEST activé - ${TEST_ROUNDS} manche${TEST_ROUNDS > 1 ? 's' : ''}`);
+    }
 });
