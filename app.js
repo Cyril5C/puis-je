@@ -575,26 +575,30 @@ const App = {
             console.error('❌ Erreur lors de la sauvegarde:', error);
         }
 
-        // Mettre à jour les stats des joueurs
-        try {
-            const sortedPlayers = [...this.players].sort((a, b) => a.score - b.score);
-            const winnerId = sortedPlayers[0].id;
+        // Mettre à jour les stats des joueurs (sauf si partie trop rapide)
+        if (!isTooFast) {
+            try {
+                const sortedPlayers = [...this.players].sort((a, b) => a.score - b.score);
+                const winnerId = sortedPlayers[0].id;
 
-            const playersStats = this.players.map(player => ({
-                name: player.name,
-                won: player.id === winnerId,
-                finalScore: player.score
-            }));
+                const playersStats = this.players.map(player => ({
+                    name: player.name,
+                    won: player.id === winnerId,
+                    finalScore: player.score
+                }));
 
-            await fetch('/api/players/update-stats', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ players: playersStats })
-            });
+                await fetch('/api/players/update-stats', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ players: playersStats })
+                });
 
-            console.log('✅ Stats des joueurs mises à jour');
-        } catch (error) {
-            console.error('❌ Erreur mise à jour stats:', error);
+                console.log('✅ Stats des joueurs mises à jour');
+            } catch (error) {
+                console.error('❌ Erreur mise à jour stats:', error);
+            }
+        } else {
+            console.log('⏱️ Stats des joueurs non mises à jour (partie trop rapide)');
         }
     },
 
