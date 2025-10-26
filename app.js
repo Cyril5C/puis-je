@@ -870,11 +870,24 @@ const App = {
     }
 };
 
-// Mot de passe pour accéder à l'application (modifiable ici)
-const APP_PASSWORD = 'puisje2025';
+// Mot de passe pour accéder à l'application
+// Récupéré depuis le serveur (configurable via variable d'environnement APP_PASSWORD)
+let APP_PASSWORD = 'lesplantes'; // Valeur par défaut
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     console.log('Application Puis-je initialisée');
+
+    // Charger le mot de passe depuis le serveur
+    try {
+        const response = await fetch('/api/config');
+        const config = await response.json();
+        if (config.appPassword) {
+            APP_PASSWORD = config.appPassword;
+            console.log('✅ Mot de passe chargé depuis le serveur');
+        }
+    } catch (error) {
+        console.warn('⚠️ Impossible de récupérer le mot de passe depuis le serveur, utilisation de la valeur par défaut');
+    }
 
     // Charger la préférence de mode sombre
     const darkMode = localStorage.getItem('darkMode') === 'true';
