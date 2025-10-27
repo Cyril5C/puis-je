@@ -186,10 +186,18 @@ const App = {
 
         // Afficher le champ commentaire uniquement pour la manche 5
         const commentSection = document.getElementById('game-comment-section');
+        const commentInput = document.getElementById('game-comment');
+
         if (this.currentRound === 5) {
+            console.log('📝 Manche 5 détectée - Affichage du champ commentaire');
             commentSection.classList.remove('hidden');
+            // Réinitialiser le textarea
+            if (commentInput) commentInput.value = '';
         } else {
+            console.log(`📝 Manche ${this.currentRound} - Masquage du champ commentaire`);
             commentSection.classList.add('hidden');
+            // Réinitialiser le textarea
+            if (commentInput) commentInput.value = '';
         }
 
         this.showScreen('card-count-screen');
