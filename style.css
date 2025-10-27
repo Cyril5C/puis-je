@@ -1010,6 +1010,10 @@ body.dark-mode #password-input:focus {
     font-weight: 500;
 }
 
+.login-error.hidden {
+    display: none;
+}
+
 /* Toggle switch */
 .toggle-container {
     display: flex;
