@@ -180,10 +180,19 @@ async function getStats() {
         }
     });
 
-    // Trier par score croissant (le plus bas est le meilleur) et prendre les 3 premiers
-    const bestScores = allScores
+    // Trier par score croissant (le plus bas est le meilleur) et filtrer les doublons
+    const bestScores = [];
+    const seenScores = new Set();
+
+    allScores
         .sort((a, b) => a.score - b.score)
-        .slice(0, 3);
+        .forEach(scoreEntry => {
+            // Ajouter uniquement si le score n'a pas déjà été vu et si on a moins de 3 scores
+            if (!seenScores.has(scoreEntry.score) && bestScores.length < 3) {
+                bestScores.push(scoreEntry);
+                seenScores.add(scoreEntry.score);
+            }
+        });
 
     // Score moyen par manche
     const scoresByRound = {};
