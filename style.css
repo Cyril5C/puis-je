@@ -1625,6 +1625,11 @@ body.dark-mode .player-card-stats {
     z-index: 1001;
 }
 
+/* Masquer le hamburger sur l'écran de connexion */
+body:has(#login-screen:not(.hidden)) .hamburger-menu-btn {
+    display: none;
+}
+
 .hamburger-menu-btn span {
     display: block;
     width: 28px;
