@@ -965,21 +965,60 @@ const App = {
 
     // Compteur de cartes
     cardCounterTotal: 0,
+    cardCounts: {}, // Objet pour suivre le nombre de chaque carte
 
     showCardCounter() {
         this.cardCounterTotal = 0;
+        this.cardCounts = {};
         document.getElementById('counter-total').textContent = '0';
+        document.getElementById('card-summary').classList.add('hidden');
+        document.getElementById('card-summary').innerHTML = '';
         this.showScreen('card-counter-screen');
     },
 
-    addCardValue(value) {
+    addCardValue(value, cardName) {
         this.cardCounterTotal += parseInt(value);
         document.getElementById('counter-total').textContent = this.cardCounterTotal;
+
+        // Incrémenter le compteur pour cette carte
+        if (!this.cardCounts[cardName]) {
+            this.cardCounts[cardName] = 0;
+        }
+        this.cardCounts[cardName]++;
+
+        // Mettre à jour l'affichage du résumé
+        this.updateCardSummary();
+    },
+
+    updateCardSummary() {
+        const summaryDiv = document.getElementById('card-summary');
+        const counts = this.cardCounts;
+
+        // Créer le résumé uniquement pour les cartes comptées
+        const summaryItems = [];
+        // Ordre des cartes: A, K, Q, J, 10, 9, 8, 7, 6, 5, 4, 3, 2
+        const order = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'];
+
+        order.forEach(card => {
+            if (counts[card] && counts[card] > 0) {
+                summaryItems.push(`${counts[card]}×${card}`);
+            }
+        });
+
+        if (summaryItems.length > 0) {
+            summaryDiv.innerHTML = summaryItems.join(', ');
+            summaryDiv.classList.remove('hidden');
+        } else {
+            summaryDiv.classList.add('hidden');
+        }
     },
 
     resetCardCounter() {
         this.cardCounterTotal = 0;
+        this.cardCounts = {};
         document.getElementById('counter-total').textContent = '0';
+        document.getElementById('card-summary').classList.add('hidden');
+        document.getElementById('card-summary').innerHTML = '';
     }
 };
 
@@ -1218,7 +1257,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.querySelectorAll('.card-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const value = btn.getAttribute('data-value');
-            App.addCardValue(value);
+            const cardName = btn.getAttribute('data-card');
+            App.addCardValue(value, cardName);
         });
     });
 
