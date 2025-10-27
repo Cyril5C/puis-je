@@ -438,23 +438,28 @@ const App = {
                 const podium = document.createElement('div');
                 podium.className = 'best-scores-podium';
 
-                stats.bestScores.slice(0, 3).forEach((scoreEntry, index) => {
+                stats.bestScores.forEach((scoreEntry, index) => {
                     const scoreCard = document.createElement('div');
                     scoreCard.className = 'best-score-card';
 
+                    // Médailles uniquement pour le top 3
                     if (index === 0) scoreCard.classList.add('gold');
                     else if (index === 1) scoreCard.classList.add('silver');
                     else if (index === 2) scoreCard.classList.add('bronze');
 
-                    const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
                     const date = new Date(scoreEntry.date).toLocaleDateString('fr-FR', {
                         day: 'numeric',
                         month: 'long',
                         year: 'numeric'
                     });
 
+                    // Afficher médaille seulement pour le top 3
+                    const medalHTML = index < 3
+                        ? `<div class="medal">${index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉'}</div>`
+                        : '';
+
                     scoreCard.innerHTML = `
-                        <div class="medal">${medal}</div>
+                        ${medalHTML}
                         <div class="rank">#${index + 1}</div>
                         <div class="player-info">
                             <div class="player-name">${scoreEntry.player}</div>
@@ -927,19 +932,24 @@ const App = {
                     const scoreCard = document.createElement('div');
                     scoreCard.className = 'best-score-card';
 
+                    // Médailles uniquement pour le top 3
                     if (index === 0) scoreCard.classList.add('gold');
                     else if (index === 1) scoreCard.classList.add('silver');
                     else if (index === 2) scoreCard.classList.add('bronze');
 
-                    const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
                     const date = new Date(scoreEntry.date).toLocaleDateString('fr-FR', {
                         day: 'numeric',
                         month: 'long',
                         year: 'numeric'
                     });
 
+                    // Afficher médaille seulement pour le top 3
+                    const medalHTML = index < 3
+                        ? `<div class="medal">${index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉'}</div>`
+                        : '';
+
                     scoreCard.innerHTML = `
-                        <div class="medal">${medal}</div>
+                        ${medalHTML}
                         <div class="rank">#${index + 1}</div>
                         <div class="player-info">
                             <div class="player-name">${scoreEntry.player}</div>
