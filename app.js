@@ -418,6 +418,20 @@ const App = {
             container.appendChild(row);
         });
 
+        // Afficher le commentaire s'il existe
+        const commentInput = document.getElementById('game-comment');
+        const comment = commentInput ? commentInput.value.trim() : '';
+
+        if (comment) {
+            const commentSection = document.createElement('div');
+            commentSection.className = 'game-comment-display';
+            commentSection.innerHTML = `
+                <div class="comment-label">💬 Commentaire</div>
+                <div class="comment-text">${comment}</div>
+            `;
+            container.appendChild(commentSection);
+        }
+
         this.showScreen('final-score-screen');
 
         // Sauvegarder la partie sur le serveur AVANT d'afficher les meilleurs scores
@@ -709,6 +723,14 @@ const App = {
 
             message += `${emoji} ${index + 1}. ${player.name} : ${player.score} pts\n`;
         });
+
+        // Ajouter le commentaire s'il existe
+        const commentInput = document.getElementById('game-comment');
+        const comment = commentInput ? commentInput.value.trim() : '';
+
+        if (comment) {
+            message += `\n💬 ${comment}\n`;
+        }
 
         message += '\n✨ Joue avec nous sur puis-je ! ✨';
 
