@@ -285,7 +285,7 @@ const App = {
                     alert(`⚠️ Le score de ${player.name} doit être entre 1 et 200`);
                     return;
                 }
-                scoresMessage += `   ${player.name} : ${scoreValue} pts\n`;
+                scoresMessage += `🏅 ${player.name} : ${scoreValue} pts\n`;
             }
         }
 
@@ -541,6 +541,11 @@ const App = {
                         ? `<div class="medal">${index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉'}</div>`
                         : '';
 
+                    // Afficher le commentaire s'il existe
+                    const commentHTML = scoreEntry.comment
+                        ? `<div class="score-comment">💬 ${scoreEntry.comment}</div>`
+                        : '';
+
                     scoreCard.innerHTML = `
                         ${medalHTML}
                         <div class="rank">#${index + 1}</div>
@@ -548,6 +553,7 @@ const App = {
                             <div class="player-name">${scoreEntry.player}</div>
                             <div class="score">${scoreEntry.score} points</div>
                             <div class="date">${date}</div>
+                            ${commentHTML}
                         </div>
                     `;
 
@@ -1044,6 +1050,11 @@ const App = {
                         ? `<div class="medal">${index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉'}</div>`
                         : '';
 
+                    // Afficher le commentaire s'il existe
+                    const commentHTML = scoreEntry.comment
+                        ? `<div class="score-comment">💬 ${scoreEntry.comment}</div>`
+                        : '';
+
                     scoreCard.innerHTML = `
                         ${medalHTML}
                         <div class="rank">#${index + 1}</div>
@@ -1051,6 +1062,7 @@ const App = {
                             <div class="player-name">${scoreEntry.player}</div>
                             <div class="score">${scoreEntry.score} points</div>
                             <div class="date">${date}</div>
+                            ${commentHTML}
                         </div>
                     `;
 

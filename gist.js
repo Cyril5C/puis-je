@@ -175,7 +175,8 @@ async function getStats() {
             allScores.push({
                 score: game.winnerScore,
                 player: game.winner,
-                date: game.date
+                date: game.date,
+                comment: game.comment
             });
         }
     });

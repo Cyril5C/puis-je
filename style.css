@@ -1440,6 +1440,41 @@ body.dark-mode .best-score-card .date {
     color: #333;
 }
 
+.best-score-card .score-comment {
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(102, 126, 234, 0.1);
+    border-left: 3px solid #667eea;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #555;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+body.dark-mode .best-score-card .score-comment {
+    background: rgba(102, 126, 234, 0.2);
+    color: #b8c5f0;
+}
+
+.best-score-card.gold .score-comment {
+    background: rgba(255, 140, 0, 0.15);
+    border-left-color: #ff8c00;
+    color: #333;
+}
+
+.best-score-card.silver .score-comment {
+    background: rgba(105, 105, 105, 0.15);
+    border-left-color: #696969;
+    color: #333;
+}
+
+.best-score-card.bronze .score-comment {
+    background: rgba(139, 69, 19, 0.15);
+    border-left-color: #8b4513;
+    color: #333;
+}
+
 .loading-message,
 .no-scores,
 .error-message {
