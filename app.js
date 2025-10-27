@@ -113,6 +113,10 @@ const App = {
     // Afficher la sélection du gagnant
     // Afficher l'écran de comptage des points avec sélection du gagnant
     showCardCountScreen() {
+        // Mettre à jour le titre avec le numéro de la manche
+        const title = document.getElementById('card-count-title');
+        title.textContent = `Points de la manche ${this.currentRound}`;
+
         const container = document.getElementById('card-counting');
         container.innerHTML = '';
 
