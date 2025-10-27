@@ -133,7 +133,6 @@ const App = {
         const container = document.getElementById('card-counting');
         container.innerHTML = '';
 
-        let isFirstInput = true;
         this.players.forEach(player => {
             if (player.id === winner.id) return; // Le gagnant n'a pas besoin de compter
 
@@ -158,13 +157,6 @@ const App = {
             input.placeholder = '-';
             input.required = true;
             input.id = `cards-${player.id}`;
-
-            // Ajouter autofocus au premier champ pour mobile
-            if (isFirstInput) {
-                input.setAttribute('autofocus', 'autofocus');
-                isFirstInput = false;
-            }
-
             input.oninput = () => {
                 // Limiter la valeur à 200 maximum
                 if (parseInt(input.value) > 200) {
@@ -193,21 +185,6 @@ const App = {
         this.currentWinner = winner;
 
         this.showScreen('card-count-screen');
-
-        // Mettre le focus sur le premier champ de saisie (avec support mobile)
-        setTimeout(() => {
-            const firstInput = container.querySelector('input');
-            if (firstInput) {
-                // Sur iOS, un click() avant focus() aide à ouvrir le clavier
-                firstInput.click();
-                firstInput.focus();
-
-                // Double sécurité pour iOS
-                setTimeout(() => {
-                    firstInput.focus();
-                }, 50);
-            }
-        }, 300);
     },
 
     // Mettre à jour le total d'un joueur
