@@ -519,6 +519,10 @@ h2 {
     border: 1px solid rgba(102, 126, 234, 0.2);
 }
 
+.game-comment-section.hidden {
+    display: none !important;
+}
+
 .game-comment-section label {
     display: block;
     font-weight: 600;
