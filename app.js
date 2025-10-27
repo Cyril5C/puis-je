@@ -184,6 +184,14 @@ const App = {
         // Stocker le gagnant temporairement
         this.currentWinner = winner;
 
+        // Afficher le champ commentaire uniquement pour la manche 5
+        const commentSection = document.getElementById('game-comment-section');
+        if (this.currentRound === 5) {
+            commentSection.classList.remove('hidden');
+        } else {
+            commentSection.classList.add('hidden');
+        }
+
         this.showScreen('card-count-screen');
     },
 
@@ -591,6 +599,10 @@ const App = {
             const sortedPlayers = [...this.players].sort((a, b) => a.score - b.score);
             const winner = sortedPlayers[0];
 
+            // Récupérer le commentaire (s'il existe)
+            const commentInput = document.getElementById('game-comment');
+            const comment = commentInput ? commentInput.value.trim() : '';
+
             const gameData = {
                 playerCount: this.players.length,
                 players: this.players.map(p => ({
@@ -602,7 +614,8 @@ const App = {
                 winnerScore: winner.score,
                 rounds: [],
                 duration: gameDuration,
-                savedToLeaderboard: !isTooFast
+                savedToLeaderboard: !isTooFast,
+                comment: comment // Ajout du commentaire
             };
 
             // Construire les données des manches
