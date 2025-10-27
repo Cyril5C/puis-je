@@ -41,14 +41,14 @@ Pour terminer, un joueur doit réaliser la **mission de la manche** et ne plus a
 - Brelan : 9♥ 9♠ 9♦
 
 #### Manche 3 : Deux suites
-- Exemple : 2♥ 3♥ 4♥ 5♥ et 8♠ 9♠ 10♠ J♠
+- Exemple : 2♥ 3♥ 4♥ 5♥ et 8♠ 9♠ 10♠ V♠
 
 #### Manche 4 : Trois brelans
-- Exemple : 2♥ 2♠ 2♦, 5♣ 5♥ 5♦, K♥ K♠ K♦
+- Exemple : 2♥ 2♠ 2♦, 5♣ 5♥ 5♦, R♥ R♠ R♦
 
 #### Manche 5 : Deux brelans et une suite
 - **Attention** : Ne pas jeter de carte à la fin !
-- Exemple : 3♥ 3♠ 3♦, 6♣ 6♥ 6♦ et 9♠ 10♥ J♦ Q♣
+- Exemple : 3♥ 3♠ 3♦, 6♣ 6♥ 6♦ et 9♠ 10♥ V♦ D♣
 
 ### Compositions valides
 
@@ -56,7 +56,7 @@ Pour terminer, un joueur doit réaliser la **mission de la manche** et ne plus a
 
 **Suite** : 4 cartes ou plus qui se suivent
 - De la même de couleur
-- L'As peut être bas (A-2-3-4) ou haut (J-Q-K-A)
+- L'As peut être bas (A-2-3-4) ou haut (V-D-R-A)
 
 ### Fin de manche
 
@@ -69,7 +69,7 @@ La manche se termine dès qu'un joueur n'a plus de carte en main.
 - **Le gagnant marque -20 points**
 - Les autres joueurs comptent leurs cartes restantes :
   - Cartes 2-10 : valeur nominale
-  - Figures (J, Q, K) : 10 points
+  - Figures (V, D, R) : 10 points
   - As : 15 points
 
 ## Fin de partie

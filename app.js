@@ -996,8 +996,8 @@ const App = {
 
         // Créer le résumé uniquement pour les cartes comptées
         const summaryItems = [];
-        // Ordre des cartes: A, K, Q, J, 10, 9, 8, 7, 6, 5, 4, 3, 2
-        const order = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'];
+        // Ordre des cartes: A, R, D, V, 10, 9, 8, 7, 6, 5, 4, 3, 2
+        const order = ['A', 'R', 'D', 'V', '10', '9', '8', '7', '6', '5', '4', '3', '2'];
 
         order.forEach(card => {
             if (counts[card] && counts[card] > 0) {
