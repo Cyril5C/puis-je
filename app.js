@@ -111,31 +111,37 @@ const App = {
     },
 
     // Afficher la sélection du gagnant
-    showWinnerSelection() {
-        const container = document.getElementById('winner-selection');
-        container.innerHTML = '';
+    // Afficher l'écran de comptage des points avec sélection du gagnant
+    showCardCountScreen() {
+        // Créer les radio boutons pour sélectionner le gagnant
+        const winnerRadiosContainer = document.getElementById('winner-selection-radios');
+        winnerRadiosContainer.innerHTML = '';
 
         this.players.forEach(player => {
-            const btn = document.createElement('button');
-            btn.className = 'winner-btn';
-            btn.textContent = player.name;
-            btn.onclick = () => this.selectWinner(player);
-            container.appendChild(btn);
+            const radioDiv = document.createElement('div');
+            radioDiv.className = 'winner-radio-option';
+
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = 'winner';
+            radio.id = `winner-${player.id}`;
+            radio.value = player.id;
+            radio.onchange = () => this.onWinnerSelected(player);
+
+            const label = document.createElement('label');
+            label.htmlFor = `winner-${player.id}`;
+            label.textContent = player.name;
+
+            radioDiv.appendChild(radio);
+            radioDiv.appendChild(label);
+            winnerRadiosContainer.appendChild(radioDiv);
         });
 
-        this.showScreen('winner-screen');
-    },
-
-    // Sélectionner le gagnant et afficher le comptage des cartes
-    selectWinner(winner) {
-        document.getElementById('winner-name').textContent = winner.name;
-
+        // Créer les champs de saisie pour tous les joueurs
         const container = document.getElementById('card-counting');
         container.innerHTML = '';
 
         this.players.forEach(player => {
-            if (player.id === winner.id) return; // Le gagnant n'a pas besoin de compter
-
             const playerDiv = document.createElement('div');
             playerDiv.className = 'player-card-count';
 
@@ -151,12 +157,13 @@ const App = {
             const input = document.createElement('input');
             input.type = 'number';
             input.inputMode = 'numeric';
-            input.min = '1';
+            input.min = '-20';
             input.max = '200';
             input.value = '';
             input.placeholder = '-';
             input.required = true;
             input.id = `cards-${player.id}`;
+            input.dataset.playerId = player.id;
             input.oninput = () => {
                 // Limiter la valeur à 200 maximum
                 if (parseInt(input.value) > 200) {
@@ -176,13 +183,12 @@ const App = {
 
             playerDiv.appendChild(playerName);
             playerDiv.appendChild(inputGroup);
-            //playerDiv.appendChild(total);
 
             container.appendChild(playerDiv);
         });
 
-        // Stocker le gagnant temporairement
-        this.currentWinner = winner;
+        // Réinitialiser le gagnant temporaire
+        this.currentWinner = null;
 
         // Afficher le champ commentaire uniquement pour la manche 5
         const commentSection = document.getElementById('game-comment-section');
@@ -191,16 +197,42 @@ const App = {
         if (this.currentRound === 5) {
             console.log('📝 Manche 5 détectée - Affichage du champ commentaire');
             commentSection.classList.remove('hidden');
-            // Réinitialiser le textarea
             if (commentInput) commentInput.value = '';
         } else {
             console.log(`📝 Manche ${this.currentRound} - Masquage du champ commentaire`);
             commentSection.classList.add('hidden');
-            // Réinitialiser le textarea
             if (commentInput) commentInput.value = '';
         }
 
         this.showScreen('card-count-screen');
+    },
+
+    // Quand un gagnant est sélectionné, remplir automatiquement -20
+    onWinnerSelected(winner) {
+        console.log(`🏆 Gagnant sélectionné: ${winner.name}`);
+        this.currentWinner = winner;
+
+        // Remplir automatiquement -20 pour le gagnant
+        const winnerInput = document.getElementById(`cards-${winner.id}`);
+        if (winnerInput) {
+            winnerInput.value = '-20';
+            winnerInput.readOnly = true;
+            winnerInput.style.background = '#e8f5e9';
+        }
+
+        // Réactiver les autres champs et vider les valeurs
+        this.players.forEach(player => {
+            if (player.id !== winner.id) {
+                const input = document.getElementById(`cards-${player.id}`);
+                if (input) {
+                    input.readOnly = false;
+                    input.style.background = '';
+                    if (input.value === '-20') {
+                        input.value = '';
+                    }
+                }
+            }
+        });
     },
 
     // Mettre à jour le total d'un joueur
@@ -222,16 +254,43 @@ const App = {
 
     // Valider les scores de la manche
     validateScores() {
-        // Vérifier que tous les scores sont remplis et valides
-        const losers = this.players.filter(p => p.id !== this.currentWinner.id);
-        for (let player of losers) {
-            const input = document.getElementById(`cards-${player.id}`);
-            const cardCount = parseInt(input.value);
+        // Vérifier qu'un gagnant a été sélectionné
+        if (!this.currentWinner) {
+            alert('⚠️ Veuillez sélectionner le gagnant de la manche');
+            return;
+        }
 
-            if (!input.value || cardCount <= 0) {
-                alert(`Veuillez entrer un nombre de points valide (minimum 1, maximum 200) pour ${player.name}`);
+        // Vérifier que tous les scores sont remplis et valides
+        let scoresMessage = '📊 Scores de la manche :\n\n';
+
+        for (let player of this.players) {
+            const input = document.getElementById(`cards-${player.id}`);
+            const scoreValue = parseInt(input.value);
+
+            if (!input.value || isNaN(scoreValue)) {
+                alert(`⚠️ Veuillez entrer un score valide pour ${player.name}`);
                 return;
             }
+
+            if (player.id === this.currentWinner.id) {
+                if (scoreValue !== -20) {
+                    alert(`⚠️ Le score du gagnant ${player.name} doit être -20`);
+                    return;
+                }
+                scoresMessage += `🏆 ${player.name} : ${scoreValue} pts (Gagnant)\n`;
+            } else {
+                if (scoreValue <= 0 || scoreValue > 200) {
+                    alert(`⚠️ Le score de ${player.name} doit être entre 1 et 200`);
+                    return;
+                }
+                scoresMessage += `   ${player.name} : ${scoreValue} pts\n`;
+            }
+        }
+
+        // Demander confirmation
+        scoresMessage += '\n✅ Valider ces scores ?';
+        if (!confirm(scoresMessage)) {
+            return;
         }
 
         // Calculer et enregistrer les scores de cette manche
@@ -1235,7 +1294,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Bouton "Score de la manche"
     document.getElementById('round-score-btn').addEventListener('click', () => {
-        App.showWinnerSelection();
+        App.showCardCountScreen();
     });
 
     // Bouton "Valider les scores"

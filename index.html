@@ -141,16 +141,17 @@
                 </div>
             </div>
 
-            <!-- Écran de sélection du gagnant -->
-            <div id="winner-screen" class="screen hidden">
-                <h2>Qui a gagné la manche ?</h2>
-                <div id="winner-selection"></div>
-            </div>
-
             <!-- Écran de comptage des cartes -->
             <div id="card-count-screen" class="screen hidden">
                 <h2>Comptage des points</h2>
-                <p class="subtitle">Gagnant : <span id="winner-name"></span> (-20 points)</p>
+
+                <!-- Sélection du gagnant -->
+                <div class="winner-selection-section">
+                    <h3>🏆 Qui a gagné la manche ?</h3>
+                    <div id="winner-selection-radios"></div>
+                </div>
+
+                <!-- Saisie des scores -->
                 <div id="card-counting"></div>
 
                 <!-- Champ commentaire pour la dernière manche -->
