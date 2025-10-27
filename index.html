@@ -41,6 +41,7 @@
             <ul>
                 <li><button id="menu-rules-btn" class="menu-item">📖 Règles du jeu</button></li>
                 <li><button id="menu-best-scores-btn" class="menu-item">🏆 Meilleurs scores</button></li>
+                <li><button id="menu-card-counter-btn" class="menu-item">🃏 Compteur de cartes</button></li>
                 <li><button id="menu-settings-btn" class="menu-item">⚙️ Paramètres</button></li>
             </ul>
         </nav>
@@ -180,6 +181,82 @@
                 <h2>🏆 Meilleurs scores</h2>
                 <div id="best-scores-content">
                     <p class="loading-message">Chargement des scores...</p>
+                </div>
+            </div>
+
+            <!-- Écran du compteur de cartes -->
+            <div id="card-counter-screen" class="screen hidden">
+                <h2>🃏 Compteur de cartes</h2>
+                <div class="card-counter-content">
+                    <div class="counter-display">
+                        <div class="counter-label">Total</div>
+                        <div id="counter-total" class="counter-value">0</div>
+                        <div class="counter-label">points</div>
+                    </div>
+
+                    <div class="cards-grid">
+                        <!-- As (15 points) -->
+                        <button class="card-btn" data-value="15">
+                            <span class="card-symbol">A</span>
+                            <span class="card-points">15 pts</span>
+                        </button>
+
+                        <!-- Têtes (10 points chacune) -->
+                        <button class="card-btn" data-value="10">
+                            <span class="card-symbol">K</span>
+                            <span class="card-points">10 pts</span>
+                        </button>
+                        <button class="card-btn" data-value="10">
+                            <span class="card-symbol">Q</span>
+                            <span class="card-points">10 pts</span>
+                        </button>
+                        <button class="card-btn" data-value="10">
+                            <span class="card-symbol">J</span>
+                            <span class="card-points">10 pts</span>
+                        </button>
+
+                        <!-- Cartes numériques (valeur faciale) -->
+                        <button class="card-btn" data-value="10">
+                            <span class="card-symbol">10</span>
+                            <span class="card-points">10 pts</span>
+                        </button>
+                        <button class="card-btn" data-value="9">
+                            <span class="card-symbol">9</span>
+                            <span class="card-points">9 pts</span>
+                        </button>
+                        <button class="card-btn" data-value="8">
+                            <span class="card-symbol">8</span>
+                            <span class="card-points">8 pts</span>
+                        </button>
+                        <button class="card-btn" data-value="7">
+                            <span class="card-symbol">7</span>
+                            <span class="card-points">7 pts</span>
+                        </button>
+                        <button class="card-btn" data-value="6">
+                            <span class="card-symbol">6</span>
+                            <span class="card-points">6 pts</span>
+                        </button>
+                        <button class="card-btn" data-value="5">
+                            <span class="card-symbol">5</span>
+                            <span class="card-points">5 pts</span>
+                        </button>
+                        <button class="card-btn" data-value="4">
+                            <span class="card-symbol">4</span>
+                            <span class="card-points">4 pts</span>
+                        </button>
+                        <button class="card-btn" data-value="3">
+                            <span class="card-symbol">3</span>
+                            <span class="card-points">3 pts</span>
+                        </button>
+                        <button class="card-btn" data-value="2">
+                            <span class="card-symbol">2</span>
+                            <span class="card-points">2 pts</span>
+                        </button>
+                    </div>
+
+                    <div class="counter-actions">
+                        <button id="reset-counter-btn" class="btn btn-secondary">🔄 Remettre à zéro</button>
+                    </div>
                 </div>
             </div>
 

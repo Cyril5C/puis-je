@@ -961,6 +961,25 @@ const App = {
             console.error('Erreur lors du chargement des meilleurs scores:', error);
             container.innerHTML = '<p class="error-message">❌ Impossible de charger les scores. Vérifiez votre connexion.</p>';
         }
+    },
+
+    // Compteur de cartes
+    cardCounterTotal: 0,
+
+    showCardCounter() {
+        this.cardCounterTotal = 0;
+        document.getElementById('counter-total').textContent = '0';
+        this.showScreen('card-counter-screen');
+    },
+
+    addCardValue(value) {
+        this.cardCounterTotal += parseInt(value);
+        document.getElementById('counter-total').textContent = this.cardCounterTotal;
+    },
+
+    resetCardCounter() {
+        this.cardCounterTotal = 0;
+        document.getElementById('counter-total').textContent = '0';
     }
 };
 
@@ -1024,6 +1043,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('menu-best-scores-btn').addEventListener('click', () => {
         App.closeHamburgerMenu();
         App.showBestScores();
+    });
+
+    document.getElementById('menu-card-counter-btn').addEventListener('click', () => {
+        App.closeHamburgerMenu();
+        App.showCardCounter();
     });
 
     document.getElementById('menu-settings-btn').addEventListener('click', () => {
@@ -1188,6 +1212,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Recharger la page pour une mise à jour complète
             window.location.reload();
         }
+    });
+
+    // Compteur de cartes - Boutons de cartes
+    document.querySelectorAll('.card-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const value = btn.getAttribute('data-value');
+            App.addCardValue(value);
+        });
+    });
+
+    // Compteur de cartes - Bouton Reset
+    document.getElementById('reset-counter-btn').addEventListener('click', () => {
+        App.resetCardCounter();
     });
 
     // Vérifier si l'utilisateur est connecté et initialiser l'application
