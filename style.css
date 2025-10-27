@@ -674,27 +674,6 @@ body.dark-mode .game-comment-display .comment-text {
     color: #ff6b00;
 }
 
-/* Score éditable */
-.editable-score {
-    cursor: pointer;
-    transition: all 0.2s ease;
-    padding: 0.3rem 0.5rem;
-    border-radius: 6px;
-}
-
-.editable-score:hover {
-    background: rgba(102, 126, 234, 0.1);
-    transform: scale(1.05);
-}
-
-.editable-score:active {
-    transform: scale(0.98);
-}
-
-body.dark-mode .editable-score:hover {
-    background: rgba(102, 126, 234, 0.2);
-}
-
 .record-message {
     display: flex;
     align-items: center;

@@ -315,10 +315,8 @@ const App = {
             name.textContent = player.name;
 
             const score = document.createElement('div');
-            score.className = 'player-score editable-score';
+            score.className = 'player-score';
             score.textContent = `${player.score} pts`;
-            score.title = 'Cliquer pour modifier';
-            score.onclick = () => this.editPlayerScore(player);
 
             row.appendChild(rank);
             row.appendChild(name);
@@ -328,61 +326,6 @@ const App = {
         });
 
         this.showScreen('scoreboard-screen');
-    },
-
-    // Éditer le score d'un joueur
-    editPlayerScore(player) {
-        const newScore = prompt(`Modifier le score de ${player.name}\nScore actuel : ${player.score} points\n\nEntrez le nouveau score total :`, player.score);
-
-        if (newScore === null) return; // Annulation
-
-        const scoreValue = parseInt(newScore);
-
-        if (isNaN(scoreValue)) {
-            alert('Veuillez entrer un nombre valide');
-            return;
-        }
-
-        // Calculer la différence
-        const difference = scoreValue - player.score;
-
-        // Mettre à jour le score du joueur
-        this.players = this.players.map(p => {
-            if (p.id === player.id) {
-                // Mettre à jour le score total
-                const updatedPlayer = { ...p, score: scoreValue };
-
-                // Mettre à jour aussi le score de la dernière manche si elle existe
-                if (p.roundScores && p.roundScores.length > 0) {
-                    const lastRoundIndex = p.roundScores.length - 1;
-                    const lastRoundScore = p.roundScores[lastRoundIndex].score;
-                    const newRoundScore = lastRoundScore + difference;
-
-                    updatedPlayer.roundScores = [...p.roundScores];
-                    updatedPlayer.roundScores[lastRoundIndex] = {
-                        ...p.roundScores[lastRoundIndex],
-                        score: newRoundScore
-                    };
-                }
-
-                return updatedPlayer;
-            }
-            return p;
-        });
-
-        // Sauvegarder l'état mis à jour
-        Storage.saveGameState({
-            players: this.players,
-            round: this.currentRound,
-            gameStartTime: this.gameStartTime,
-            inProgress: true,
-            roundStarted: false
-        });
-
-        console.log(`✏️ Score de ${player.name} modifié : ${player.score} → ${scoreValue}`);
-
-        // Rafraîchir l'affichage
-        this.showScoreboard();
     },
 
     // Afficher les scores finaux
