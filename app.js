@@ -402,13 +402,13 @@ const App = {
             container.appendChild(row);
         });
 
-        // Ajouter les meilleurs scores à la suite
-        await this.addBestScoresToFinalScreen(container);
-
         this.showScreen('final-score-screen');
 
-        // Sauvegarder la partie sur le serveur
+        // Sauvegarder la partie sur le serveur AVANT d'afficher les meilleurs scores
         await this.saveGameToServer();
+
+        // Ajouter les meilleurs scores à la suite (après la sauvegarde)
+        await this.addBestScoresToFinalScreen(container);
     },
 
     // Ajouter les meilleurs scores sur l'écran final
