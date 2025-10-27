@@ -113,31 +113,6 @@ const App = {
     // Afficher la sélection du gagnant
     // Afficher l'écran de comptage des points avec sélection du gagnant
     showCardCountScreen() {
-        // Créer les radio boutons pour sélectionner le gagnant
-        const winnerRadiosContainer = document.getElementById('winner-selection-radios');
-        winnerRadiosContainer.innerHTML = '';
-
-        this.players.forEach(player => {
-            const radioDiv = document.createElement('div');
-            radioDiv.className = 'winner-radio-option';
-
-            const radio = document.createElement('input');
-            radio.type = 'radio';
-            radio.name = 'winner';
-            radio.id = `winner-${player.id}`;
-            radio.value = player.id;
-            radio.onchange = () => this.onWinnerSelected(player);
-
-            const label = document.createElement('label');
-            label.htmlFor = `winner-${player.id}`;
-            label.textContent = player.name;
-
-            radioDiv.appendChild(radio);
-            radioDiv.appendChild(label);
-            winnerRadiosContainer.appendChild(radioDiv);
-        });
-
-        // Créer les champs de saisie pour tous les joueurs
         const container = document.getElementById('card-counting');
         container.innerHTML = '';
 
@@ -145,14 +120,36 @@ const App = {
             const playerDiv = document.createElement('div');
             playerDiv.className = 'player-card-count';
 
+            // Radio bouton pour sélectionner le gagnant
+            const radioDiv = document.createElement('div');
+            radioDiv.className = 'winner-radio-inline';
+
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = 'winner';
+            radio.id = `winner-${player.id}`;
+            radio.value = player.id;
+            radio.title = 'Gagnant';
+            radio.onchange = () => this.onWinnerSelected(player);
+
+            const radioLabel = document.createElement('label');
+            radioLabel.htmlFor = `winner-${player.id}`;
+            radioLabel.textContent = '🏆';
+            radioLabel.title = 'Sélectionner comme gagnant';
+
+            radioDiv.appendChild(radio);
+            radioDiv.appendChild(radioLabel);
+
+            // Nom du joueur
             const playerName = document.createElement('h3');
             playerName.textContent = player.name;
 
+            // Champ de saisie
             const inputGroup = document.createElement('div');
             inputGroup.className = 'card-input-group';
 
             const label = document.createElement('label');
-            label.textContent = 'Nombre de points';
+            label.textContent = 'Points';
 
             const input = document.createElement('input');
             input.type = 'number';
@@ -181,6 +178,7 @@ const App = {
             inputGroup.appendChild(label);
             inputGroup.appendChild(input);
 
+            playerDiv.appendChild(radioDiv);
             playerDiv.appendChild(playerName);
             playerDiv.appendChild(inputGroup);
 
