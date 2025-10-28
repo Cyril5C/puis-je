@@ -1135,6 +1135,23 @@ const App = {
         document.getElementById('counter-total').textContent = '0';
         document.getElementById('card-summary').classList.add('hidden');
         document.getElementById('card-summary').innerHTML = '';
+    },
+
+    copyCounterScore() {
+        const score = this.cardCounterTotal;
+        navigator.clipboard.writeText(score.toString()).then(() => {
+            const btn = document.getElementById('copy-counter-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '✓';
+            btn.style.background = '#4caf50';
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '';
+            }, 1000);
+        }).catch(err => {
+            console.error('Erreur lors de la copie:', err);
+            alert('Impossible de copier le score');
+        });
     }
 };
 
@@ -1381,6 +1398,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Compteur de cartes - Bouton Reset
     document.getElementById('reset-counter-btn').addEventListener('click', () => {
         App.resetCardCounter();
+    });
+
+    // Compteur de cartes - Bouton Copier
+    document.getElementById('copy-counter-btn').addEventListener('click', () => {
+        App.copyCounterScore();
     });
 
     // Vérifier si l'utilisateur est connecté et initialiser l'application

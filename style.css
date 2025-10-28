@@ -1586,6 +1586,13 @@ body.dark-mode .card-summary {
     margin: 0;
 }
 
+.counter-value-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
 .counter-value {
     color: white;
     font-size: 2.5rem;
@@ -1593,6 +1600,26 @@ body.dark-mode .card-summary {
     font-family: 'Arial Black', sans-serif;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     margin: 0.3rem 0;
+}
+
+.copy-counter-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.copy-counter-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.copy-counter-btn:active {
+    transform: scale(0.95);
 }
 
 .cards-grid {
@@ -1694,9 +1721,19 @@ body.dark-mode .card-points {
         font-size: 0.65rem;
     }
 
+    .counter-value-wrapper {
+        gap: 0.3rem;
+    }
+
     .counter-value {
         font-size: 2rem;
         margin: 0.2rem 0;
+    }
+
+    .copy-counter-btn {
+        padding: 0.3rem 0.5rem;
+        font-size: 1.2rem;
+        border-radius: 6px;
     }
 
     .cards-grid {
