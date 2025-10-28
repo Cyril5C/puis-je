@@ -1493,6 +1493,42 @@ body.dark-mode .no-scores {
     color: #e53e3e;
 }
 
+/* Responsive mobile pour meilleurs scores */
+@media (max-width: 600px) {
+    .best-score-card {
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+
+    .best-score-card .medal {
+        font-size: 2rem;
+    }
+
+    .best-score-card .rank {
+        font-size: 1.1rem;
+        min-width: 35px;
+    }
+
+    .best-score-card .player-name {
+        font-size: 1.1rem;
+    }
+
+    .best-score-card .score {
+        font-size: 1.4rem;
+    }
+
+    .best-score-card .date {
+        font-size: 0.8rem;
+    }
+
+    .best-score-card .score-comment {
+        margin-top: 0.4rem;
+        padding: 0.4rem 0.6rem;
+        font-size: 0.85rem;
+        border-left-width: 2px;
+    }
+}
+
 /* Compteur de cartes */
 #card-counter-screen {
     display: flex;
