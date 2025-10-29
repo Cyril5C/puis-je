@@ -995,8 +995,18 @@ const App = {
 
     // Démarrer la partie avec les joueurs sélectionnés
     startGameWithSelectedPlayers() {
-        if (this.selectedPlayers.length < 3 || this.selectedPlayers.length > 5) {
-            alert('❌ Sélectionne entre 3 et 5 joueurs');
+        if (this.selectedPlayers.length === 0) {
+            alert('⚠️ Veuillez sélectionner au moins 3 joueurs');
+            return;
+        }
+
+        if (this.selectedPlayers.length < 3) {
+            alert('⚠️ Veuillez sélectionner au moins 3 joueurs');
+            return;
+        }
+
+        if (this.selectedPlayers.length > 5) {
+            alert('⚠️ Maximum 5 joueurs autorisés');
             return;
         }
 
