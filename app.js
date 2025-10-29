@@ -8,6 +8,7 @@ const App = {
     currentScreen: 'player-selection-screen',
     currentRound: 1,
     gameStartTime: null,
+    gameSaved: false, // Flag pour éviter de sauvegarder plusieurs fois
     maxRounds: 5, // Sera mis à jour depuis le serveur
     testMode: false,
 
@@ -64,6 +65,9 @@ const App = {
 
         // Démarrer le chronomètre
         this.gameStartTime = Date.now();
+
+        // Réinitialiser le flag de sauvegarde
+        this.gameSaved = false;
 
         // Sauvegarder les noms des joueurs pour rejouer plus tard
         Storage.saveLastPlayers(playerNames);
@@ -496,7 +500,11 @@ const App = {
         this.showScreen('final-score-screen');
 
         // Sauvegarder la partie sur le serveur AVANT d'afficher les meilleurs scores
-        await this.saveGameToServer();
+        // Mais seulement si elle n'a pas déjà été sauvegardée
+        if (!this.gameSaved) {
+            await this.saveGameToServer();
+            this.gameSaved = true;
+        }
 
         // Ajouter les meilleurs scores à la suite (après la sauvegarde)
         await this.addBestScoresToFinalScreen(container);
