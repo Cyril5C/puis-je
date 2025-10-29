@@ -17,9 +17,15 @@ app.use(express.static(path.join(__dirname)));
 
 // Cache control pour les assets
 app.use((req, res, next) => {
-    // Cache les assets statiques pendant 1 jour
-    if (req.url.match(/\.(css|js|jpg|jpeg|png|gif|svg|ico|woff|woff2|ttf|eot)$/)) {
-        res.setHeader('Cache-Control', 'public, max-age=86400'); // 1 jour
+    // En développement : pas de cache pour CSS/JS
+    if (req.url.match(/\.(css|js)$/)) {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+    }
+    // Cache les autres assets (images, fonts) pendant 1 jour
+    else if (req.url.match(/\.(jpg|jpeg|png|gif|svg|ico|woff|woff2|ttf|eot)$/)) {
+        res.setHeader('Cache-Control', 'public, max-age=86400');
     }
     next();
 });
