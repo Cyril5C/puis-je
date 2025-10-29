@@ -969,12 +969,13 @@ const App = {
 
         countElement.textContent = `${count} joueur${count > 1 ? 's' : ''} sélectionné${count > 1 ? 's' : ''}`;
 
-        // Activer le bouton si 3-5 joueurs sélectionnés
+        // Toujours laisser le bouton activé - la validation se fait au clic
+        startBtn.disabled = false;
+
+        // Changer la couleur du compteur selon le nombre
         if (count >= 3 && count <= 5) {
-            startBtn.disabled = false;
             countElement.style.color = '#4caf50';
         } else {
-            startBtn.disabled = true;
             countElement.style.color = count > 5 ? '#e53e3e' : '#667eea';
         }
     },
