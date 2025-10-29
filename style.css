@@ -1929,7 +1929,7 @@ body.dark-mode .hamburger-menu-btn:hover span {
 
 /* Animation hamburger vers X */
 .hamburger-menu-btn.active span:nth-child(1) {
-    transform: rotate(45deg) translate(7px, 7px);
+    transform: translateY(8px) rotate(45deg);
 }
 
 .hamburger-menu-btn.active span:nth-child(2) {
@@ -1937,7 +1937,7 @@ body.dark-mode .hamburger-menu-btn:hover span {
 }
 
 .hamburger-menu-btn.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -7px);
+    transform: translateY(-8px) rotate(-45deg);
 }
 
 /* Menu déroulant */
