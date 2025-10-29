@@ -1440,6 +1440,29 @@ body.dark-mode .best-score-card .date {
     color: #333;
 }
 
+.best-score-card .game-number {
+    font-size: 0.85rem;
+    color: #667eea;
+    font-weight: 600;
+    margin-top: 0.2rem;
+}
+
+body.dark-mode .best-score-card .game-number {
+    color: #9fa8da;
+}
+
+.best-score-card.gold .game-number {
+    color: #ff8c00;
+}
+
+.best-score-card.silver .game-number {
+    color: #696969;
+}
+
+.best-score-card.bronze .game-number {
+    color: #8b4513;
+}
+
 .best-score-card .score-comment {
     margin-top: 0.5rem;
     padding: 0.5rem 0.75rem;
@@ -1515,6 +1538,10 @@ body.dark-mode .no-scores {
 
     .best-score-card .score {
         font-size: 1.4rem;
+    }
+
+    .best-score-card .game-number {
+        font-size: 0.75rem;
     }
 
     .best-score-card .date {

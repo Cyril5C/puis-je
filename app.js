@@ -546,12 +546,18 @@ const App = {
                         ? `<div class="score-comment">💬 ${scoreEntry.comment}</div>`
                         : '';
 
+                    // Afficher le numéro de partie s'il existe
+                    const gameNumberHTML = scoreEntry.gameNumber
+                        ? `<div class="game-number">Partie #${scoreEntry.gameNumber}</div>`
+                        : '';
+
                     scoreCard.innerHTML = `
                         ${medalHTML}
                         <div class="rank">#${index + 1}</div>
                         <div class="player-info">
                             <div class="player-name">${scoreEntry.player}</div>
                             <div class="score">${scoreEntry.score} points</div>
+                            ${gameNumberHTML}
                             <div class="date">${date}</div>
                             ${commentHTML}
                         </div>
@@ -1055,12 +1061,18 @@ const App = {
                         ? `<div class="score-comment">💬 ${scoreEntry.comment}</div>`
                         : '';
 
+                    // Afficher le numéro de partie s'il existe
+                    const gameNumberHTML = scoreEntry.gameNumber
+                        ? `<div class="game-number">Partie #${scoreEntry.gameNumber}</div>`
+                        : '';
+
                     scoreCard.innerHTML = `
                         ${medalHTML}
                         <div class="rank">#${index + 1}</div>
                         <div class="player-info">
                             <div class="player-name">${scoreEntry.player}</div>
                             <div class="score">${scoreEntry.score} points</div>
+                            ${gameNumberHTML}
                             <div class="date">${date}</div>
                             ${commentHTML}
                         </div>

@@ -116,9 +116,16 @@ async function saveGistData(data) {
 async function addGame(gameData) {
     const data = await getGistData();
 
+    // Calculer le prochain numéro de partie (incrémental)
+    const maxGameNumber = data.games.reduce((max, game) => {
+        return Math.max(max, game.gameNumber || 0);
+    }, 0);
+    const nextGameNumber = maxGameNumber + 1;
+
     // Ajouter la nouvelle partie
     const game = {
         id: Date.now(),
+        gameNumber: nextGameNumber,
         date: new Date().toISOString(),
         ...gameData
     };
@@ -176,7 +183,8 @@ async function getStats() {
                 score: game.winnerScore,
                 player: game.winner,
                 date: game.date,
-                comment: game.comment
+                comment: game.comment,
+                gameNumber: game.gameNumber
             });
         }
     });
