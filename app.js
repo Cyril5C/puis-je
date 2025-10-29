@@ -1274,9 +1274,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 await App.loadConfig();
                 await App.loadPlayers();
 
-                // Vérifier s'il y a une partie en cours
+                // Vérifier s'il y a une partie en cours ou terminée
                 const gameState = Storage.getGameState();
-                if (gameState && gameState.inProgress) {
+                if (gameState && gameState.players && gameState.players.length > 0) {
                     App.restoreGame(gameState);
                 } else {
                     // Afficher l'écran de sélection des joueurs
@@ -1446,10 +1446,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             await App.loadConfig();
             await App.loadPlayers();
 
-            // Vérifier s'il y a une partie en cours
+            // Vérifier s'il y a une partie en cours ou terminée
             const gameState = Storage.getGameState();
-            if (gameState && gameState.inProgress) {
-                console.log('Partie en cours détectée, restauration...');
+            if (gameState && gameState.players && gameState.players.length > 0) {
+                console.log('Partie détectée, restauration...');
                 App.restoreGame(gameState);
             } else {
                 // Afficher l'écran de sélection des joueurs
