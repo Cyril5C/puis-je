@@ -35,8 +35,9 @@ const App = {
         this.players = gameState.players;
         this.currentRound = gameState.round || 1;
         this.gameStartTime = gameState.gameStartTime || Date.now();
+        this.gameSaved = gameState.gameSaved || false;
         console.log('Partie restaurée:', gameState);
-        console.log(`⚙️ Configuration: maxRounds=${this.maxRounds}, testMode=${this.testMode}`);
+        console.log(`⚙️ Configuration: maxRounds=${this.maxRounds}, testMode=${this.testMode}, gameSaved=${this.gameSaved}`);
 
         // Masquer le header (mode jeu)
         document.body.classList.add('in-game');
@@ -504,6 +505,15 @@ const App = {
         if (!this.gameSaved) {
             await this.saveGameToServer();
             this.gameSaved = true;
+
+            // Mettre à jour le localStorage pour sauvegarder le flag gameSaved
+            Storage.saveGameState({
+                players: this.players,
+                round: this.currentRound,
+                gameStartTime: this.gameStartTime,
+                gameSaved: true,
+                inProgress: false
+            });
         }
 
         // Ajouter les meilleurs scores à la suite (après la sauvegarde)
